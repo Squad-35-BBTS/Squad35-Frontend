@@ -1,0 +1,23 @@
+
+/* Estilos globais do SGA-LB */
+
+:root {
+  color: #202a3c;
+  background: #f6f7fb;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
