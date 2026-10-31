@@ -1,0 +1,120 @@
+/* Identidade de acesso BBTS / SGA-LB. */
+.auth-page{min-height:100vh;background:var(--surface);display:flex;flex-direction:column;font-family:Arial,Helvetica,sans-serif}
+.auth-header{min-height:88px;padding:14px clamp(22px,5vw,86px);display:flex;align-items:center;justify-content:space-between;gap:24px;background:#3231b9;color:#fff}
+.auth-brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fcfc30;font-size:clamp(18px,1.7vw,26px);font-weight:700;line-height:1.1;letter-spacing:-.7px}
+.auth-brand-mark{width:49px;height:60px;background:#fff;border-radius:5px;display:grid;place-items:center;flex-shrink:0;padding:5px}
+.auth-brand-mark img{display:block;max-width:100%;width:auto;height:49px;object-fit:contain}
+.auth-header nav{display:flex;gap:28px;align-items:center}
+.auth-header nav a{color:#fff;font-size:14px;text-decoration:none;padding:12px 0;border-bottom:2px solid transparent}
+.auth-header nav a:hover{border-color:#fcfc30}
+.auth-page .auth-main{flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:calc(100vh - 150px);background:var(--surface);width:100%;max-width:none;margin:0;padding:0}
+.auth-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;padding:65px clamp(30px,6vw,100px);background:radial-gradient(ellipse at 18% 25%,#23385a 0,transparent 52%),linear-gradient(130deg,#0a142c,#101a35 60%,#1f2863);color:#fff;min-height:610px}
+.auth-hero:before{content:'';position:absolute;inset:0;z-index:-1;opacity:.42;background-image:radial-gradient(circle,#ffffff80 1px,transparent 1.5px),radial-gradient(circle,#b8caff70 1px,transparent 1.5px);background-size:87px 91px,137px 123px;background-position:12px 25px,55px 78px}
+.auth-planet{position:absolute;z-index:-1;width:660px;height:660px;right:-370px;bottom:-300px;border:1px solid #8ba8ff4d;border-radius:50%;background:radial-gradient(circle at 24% 22%,#5071d04d,transparent 57%),repeating-radial-gradient(ellipse at center,transparent 0 41px,#98b3ff18 42px 43px);box-shadow:0 0 90px #465eff40,inset 25px 20px 65px #93b9ff26;transform:rotate(-28deg)}
+.auth-hero-content{position:relative;max-width:540px}
+.auth-kicker{display:block;font-size:11px;font-weight:700;letter-spacing:2px;line-height:1.7;text-transform:uppercase;color:#d0d8ff;margin-bottom:28px}
+.auth-hero h1{font-size:clamp(38px,4.1vw,63px);font-weight:600;line-height:1.09;letter-spacing:-2px;color:#fff;margin:0 0 28px}
+.auth-hero h1 span{color:#aab9ff;font-weight:400}
+.auth-hero p{font-size:15px;line-height:1.8;color:#d7dff2;max-width:365px;margin-bottom:29px}
+.auth-pills{display:flex;flex-wrap:wrap;gap:8px}
+.auth-pills span{font-size:10px;padding:8px 11px;border:1px solid #a0b2e83d;border-radius:20px;color:#e5ebff;background:#ffffff05}
+.auth-hero-signature{display:flex;align-items:center;gap:12px;margin-top:55px;color:#e1e6f5;font-size:11px;line-height:1.6}
+.auth-signature-line{width:32px;height:3px;background:#f2df78;flex-shrink:0}
+.auth-form-shell{display:flex;align-items:center;justify-content:center;padding:48px 40px 78px;background:var(--surface)}
+.auth-form-shell .login-card{width:min(390px,100%);padding:0;align-self:auto;justify-self:auto}
+.auth-form-shell .login-card>.eyebrow{color:var(--accent);font-size:10px;letter-spacing:1.4px}
+.auth-form-shell .login-card h2{font-size:29px;font-weight:600;letter-spacing:-.8px;margin:15px 0 12px;color:var(--text)}
+.auth-form-shell .login-card>p{font-size:14px;color:var(--muted);margin-bottom:0}
+.auth-form-shell .login-card form{gap:21px;margin-top:30px}
+.auth-form-shell .login-card label{font-size:13px;gap:9px;color:var(--text);font-weight:500}
+.auth-form-shell .login-card input{font-size:14px;padding:14px;min-height:47px;border-radius:5px;background:var(--field);border-color:var(--line)}
+.auth-form-shell .password{border-radius:5px}
+.auth-form-shell .password input{border:0;background:transparent}
+.auth-form-shell .password button{font-size:12px;min-width:73px;color:var(--accent)}
+.auth-form-shell button.primary{min-height:47px;border-radius:5px;background:#465eff;border-color:#465eff;color:#fff;font-size:14px;font-weight:600}
+.auth-form-shell button.primary:hover:not(:disabled){background:#354be0;border-color:#354be0}
+.auth-form-shell .recovery-request{border-top:1px solid var(--line);margin-top:25px;padding-top:20px;font-size:13px;color:var(--accent)}
+.auth-form-shell .recovery-request p{font-size:13px;margin-top:15px;color:var(--muted)}
+.auth-form-shell .recovery-request form{margin-top:18px;gap:16px}
+.auth-form-shell .notice{overflow-wrap:anywhere}
+.auth-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px clamp(22px,5vw,86px);border-top:1px solid var(--line);color:var(--muted);background:var(--surface);font-size:10px;line-height:1.6}
+.auth-footer strong{color:var(--accent)}
+@media(min-width:1600px){.auth-hero{padding-left:max(80px,calc((100vw - 1400px)/2))}}
+@media(max-width:900px){.auth-page .auth-main{grid-template-columns:1fr 1fr}.auth-hero{padding:45px 28px;min-height:580px}.auth-hero h1{font-size:40px}.auth-form-shell{padding:40px 28px 80px}.auth-brand{font-size:20px}.auth-header nav{gap:20px}.auth-hero-signature{margin-top:35px}}
+@media(max-width:650px){.auth-header{min-height:76px;padding:12px 20px}.auth-brand{font-size:18px;gap:10px;letter-spacing:-.4px}.auth-brand-mark{width:38px;height:50px}.auth-brand-mark img{height:40px}.auth-header nav{display:none}.auth-page .auth-main{grid-template-columns:1fr;min-height:0}.auth-hero{min-height:0;padding:30px 25px 34px}.auth-kicker{font-size:9px;letter-spacing:1.2px;margin-bottom:16px}.auth-hero h1{font-size:35px;letter-spacing:-1px;margin-bottom:16px}.auth-hero h1 br{display:none}.auth-hero h1 span{display:block;margin-top:6px}.auth-hero p{font-size:13px;margin:0;max-width:100%}.auth-pills,.auth-hero-signature{display:none}.auth-planet{width:360px;height:360px;right:-220px;bottom:-220px}.auth-form-shell{padding:34px 25px 40px}.auth-form-shell .login-card h2{font-size:27px}.auth-footer{align-items:flex-start;flex-direction:column;gap:5px;padding:20px 25px 86px}}
+
+/* Cabeçalho compacto */
+
+.auth-header {
+  min-height: 64px;
+  padding: 10px clamp(22px, 5vw, 86px);
+}
+
+.auth-brand {
+  gap: 11px;
+  font-size: clamp(17px, 1.4vw, 21px);
+  letter-spacing: -0.4px;
+}
+
+.auth-brand-mark {
+  width: 36px;
+  height: 44px;
+  padding: 4px;
+}
+
+.auth-brand-mark img {
+  height: 36px;
+}
+
+
+.auth-page .auth-main {
+  min-height: calc(100dvh - 64px);
+}
+
+@media (max-width: 650px) {
+  .auth-header {
+    min-height: 60px;
+    padding: 8px 20px;
+  }
+
+  .auth-brand {
+    font-size: 17px;
+    gap: 10px;
+  }
+
+  .auth-page .auth-main {
+    min-height: calc(100dvh - 60px);
+  }
+}
+
+/* Remove o traço acima de "Esqueci minha senha" */
+
+.auth-form-shell .recovery-request {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 20px;
+}
+
+/* Olho ao lado de Mostrar/Ocultar */
+
+.auth-form-shell .password button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 100px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.auth-form-shell .password button svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.auth-form-shell .password input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+}

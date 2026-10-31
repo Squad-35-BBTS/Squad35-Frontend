@@ -27,6 +27,14 @@ import type {
   User,
 } from './types'
 
+import AuthLayout from './components/AuthLayout'
+import ProfilePanel from './components/ProfilePanel'
+import {
+  RecoveryRequest,
+  ResetPassword,
+} from './components/PasswordRecovery'
+import PublicQueries from './components/PublicQueries'
+
 import './App.css'
 
 type Screen =
@@ -37,6 +45,7 @@ type Screen =
   | 'relatorios'
   | 'auditoria'
   | 'perfil'
+  | 'consultas'
 
 type Body = Record<string, string | null>
 
@@ -45,7 +54,10 @@ type Field = {
   label: string
   type?: string
   required?: boolean
-  options?: { value: string; label: string }[]
+  options?: {
+    value: string
+    label: string
+  }[]
   value?: string
   min?: number
   max?: number
@@ -59,12 +71,27 @@ type Dialog = {
   save: (body: Body) => Promise<unknown>
 }
 
+type Tools = {
+  revision: number
+  busy: boolean
+  user: User
+  run: <T>(
+    work: () => Promise<T>,
+    success?: string,
+  ) => Promise<T>
+  open: (dialog: Dialog) => void
+}
+
 const screens: {
   id: Screen
   label: string
   icon: string
 }[] = [
-  { id: 'dashboard', label: 'BEM+ Radar', icon: '◉' },
+  {
+    id: 'dashboard',
+    label: 'BEM+ Radar',
+    icon: '◉',
+  },
   {
     id: 'projetos',
     label: 'Elegibilidade e projetos',
@@ -90,7 +117,16 @@ const screens: {
     label: 'Auditoria e logs',
     icon: '◎',
   },
-  { id: 'perfil', label: 'Meu Perfil', icon: '○' },
+  {
+    id: 'perfil',
+    label: 'Meu perfil',
+    icon: '○',
+  },
+  {
+    id: 'consultas',
+    label: 'Consultas CNPJ',
+    icon: '⌕',
+  },
 ]
 
 const canManage = (user: User) =>
@@ -130,7 +166,11 @@ function useApi<T>(path: string, revision = 0) {
     api<T>(path)
       .then(data => {
         if (active) {
-          setResult({ key, data, error: '' })
+          setResult({
+            key,
+            data,
+            error: '',
+          })
         }
       })
       .catch(error => {
@@ -149,7 +189,10 @@ function useApi<T>(path: string, revision = 0) {
   }, [path, key])
 
   return result.key === key
-    ? { ...result, loading: false }
+    ? {
+        ...result,
+        loading: false,
+      }
     : {
         data: null,
         error: '',
@@ -204,9 +247,7 @@ function Modal({
     const body: Body = {}
 
     for (const field of dialog.fields) {
-      const value = String(
-        data.get(field.name) ?? '',
-      ).trim()
+      const value = String(data.get(field.name) ?? '').trim()
 
       if (value !== '') {
         body[field.name] = value
@@ -264,8 +305,7 @@ function Modal({
                   <select
                     name={field.name}
                     defaultValue={
-                      field.value ??
-                      field.options[0]?.value
+                      field.value ?? field.options[0]?.value
                     }
                     required={field.required}
                   >
@@ -315,10 +355,7 @@ function Modal({
               Cancelar
             </button>
 
-            <button
-              className="primary"
-              disabled={busy}
-            >
+            <button className="primary" disabled={busy}>
               {busy ? 'Salvando…' : 'Salvar'}
             </button>
           </footer>
@@ -366,41 +403,20 @@ function Login({
   }
 
   return (
-    <main className="login-page">
-      <section className="login-intro">
-        <span className="brand-box">LB</span>
-
-        <span className="eyebrow">
-          BBTS · Pesquisa e Desenvolvimento
-        </span>
-
-        <h1>
-          Da inovação
-          <br />
-          à evidência.
-        </h1>
-
-        <p>
-          Projetos, experimentos e recursos reunidos
-          em um só lugar.
-        </p>
-
-        <div className="login-note">
-          SGA-LB <span>Gestão de P&D</span>
-        </div>
-      </section>
-
+    <AuthLayout>
       <section className="login-card">
         <span className="eyebrow">
           Acesso à plataforma
         </span>
 
         <h2>Bem-vindo de volta</h2>
+
         <p>Entre com o e-mail cadastrado no sistema.</p>
 
         <form onSubmit={submit}>
           <label>
             E-mail
+
             <input
               type="email"
               name="email"
@@ -412,6 +428,7 @@ function Login({
 
           <label>
             Senha
+
             <div className="password">
               <input
                 type={show ? 'text' : 'password'}
@@ -422,9 +439,42 @@ function Login({
 
               <button
                 type="button"
-                onClick={() => setShow(!show)}
+                onClick={() => setShow(value => !value)}
+                aria-pressed={show}
               >
-                {show ? 'Ocultar' : 'Mostrar'}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 12c2.5-4.5 5.8-7 10-7s7.5 2.5 10 7c-2.5 4.5-5.8 7-10 7S4.5 16.5 2 12Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinejoin="round"
+                  />
+
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+
+                  {show && (
+                    <path
+                      d="m3 3 18 18"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                  )}
+                </svg>
+
+                <span>
+                  {show ? 'Ocultar' : 'Mostrar'}
+                </span>
               </button>
             </div>
           </label>
@@ -435,29 +485,14 @@ function Login({
             </p>
           )}
 
-          <button
-            className="primary"
-            disabled={busy}
-          >
+          <button className="primary" disabled={busy}>
             {busy ? 'Entrando…' : 'Entrar'}
           </button>
         </form>
 
-        <details>
-          <summary>Esqueci minha senha</summary>
-          <p>
-            A recuperação automática ainda não está
-            disponível. Solicite suporte ao responsável
-            pelo ambiente.
-          </p>
-        </details>
-
-        <small>
-          A sessão fica nesta aba. Matrícula e SSO
-          ainda não estão disponíveis.
-        </small>
+        <RecoveryRequest />
       </section>
-    </main>
+    </AuthLayout>
   )
 }
 
@@ -562,8 +597,14 @@ function projectFields(
       step: '0.01',
       value: '0',
     },
-    { name: 'diretoria', label: 'Diretoria' },
-    { name: 'gerencia', label: 'Gerência' },
+    {
+      name: 'diretoria',
+      label: 'Diretoria',
+    },
+    {
+      name: 'gerencia',
+      label: 'Gerência',
+    },
     {
       name: 'trilha_tecnologica',
       label: 'Trilha tecnológica',
@@ -611,35 +652,29 @@ function projectFields(
       project as unknown as Record<string, unknown>
     )[field.name]
 
+    let fieldValue: string
+
+    if (field.name === 'risco_glosa') {
+      fieldValue = project.risco_glosa.split(' (')[0]
+    } else if (
+      field.name === 'risco_glosa_pct' &&
+      value == null
+    ) {
+      fieldValue =
+        project.risco_glosa
+          .match(/\((\d+(?:[.,]\d+)?)%\)/)?.[1]
+          .replace(',', '.') || ''
+    } else if (field.type === 'date') {
+      fieldValue = String(value || '').slice(0, 10)
+    } else {
+      fieldValue = String(value ?? '')
+    }
+
     return {
       ...field,
-
-      value:
-        field.name === 'risco_glosa'
-          ? project.risco_glosa.split(' (')[0]
-          : field.name === 'risco_glosa_pct' &&
-              value == null
-            ? (
-                project.risco_glosa
-                  .match(/\((\d+(?:[.,]\d+)?)%\)/)?.[1]
-                  .replace(',', '.') || ''
-              )
-            : field.type === 'date'
-              ? String(value || '').slice(0, 10)
-              : String(value ?? ''),
+      value: fieldValue,
     }
   })
-}
-
-type Tools = {
-  revision: number
-  busy: boolean
-  user: User
-  run: <T>(
-    work: () => Promise<T>,
-    success?: string,
-  ) => Promise<T>
-  open: (dialog: Dialog) => void
 }
 
 function DossierPanel({
@@ -649,19 +684,19 @@ function DossierPanel({
   id: number
   tools: Tools
 }) {
-  const resource = useApi<Dossier>(
+  const result = useApi<Dossier>(
     `/iniciativas/${id}/dossie`,
     tools.revision,
   )
 
-  if (resource.loading) {
+  if (result.loading) {
     return <Empty>Carregando dossiê…</Empty>
   }
 
-  if (resource.error || !resource.data) {
+  if (result.error || !result.data) {
     return (
       <p className="notice error">
-        {resource.error}
+        {result.error}
       </p>
     )
   }
@@ -670,7 +705,7 @@ function DossierPanel({
     projeto: project,
     pendencias,
     pronto_para_fechar,
-  } = resource.data
+  } = result.data
 
   const manager = canManage(tools.user)
   const closed = project.status_dossie === 'Fechado'
@@ -678,7 +713,6 @@ function DossierPanel({
   function opinion() {
     tools.open({
       title: 'Emitir parecer técnico',
-
       fields: [
         {
           name: 'conclusao',
@@ -696,7 +730,6 @@ function DossierPanel({
           required: true,
         },
       ],
-
       save: body =>
         tools.run(() =>
           api(
@@ -711,7 +744,6 @@ function DossierPanel({
   function alert() {
     tools.open({
       title: 'Novo alerta',
-
       fields: [
         {
           name: 'titulo',
@@ -739,7 +771,6 @@ function DossierPanel({
           required: true,
         },
       ],
-
       save: body =>
         tools.run(() =>
           api(
@@ -758,6 +789,7 @@ function DossierPanel({
           <span className="eyebrow">
             {project.codigo} · Revisão {project.revisao}
           </span>
+
           <h2>{project.nome}</h2>
         </div>
 
@@ -827,23 +859,19 @@ function DossierPanel({
         {manager && !closed && (
           <button
             className="primary"
-            disabled={
-              !pronto_para_fechar || tools.busy
-            }
+            disabled={!pronto_para_fechar || tools.busy}
             onClick={() => {
-              if (
-                confirm(
-                  'Fechar o dossiê desta revisão?',
-                )
-              ) {
-                void tools.run(
-                  () =>
-                    api(
-                      `/iniciativas/${id}/dossie/fechar`,
-                      'POST',
-                    ),
-                  'Dossiê fechado.',
-                ).catch(() => {})
+              if (confirm('Fechar o dossiê desta revisão?')) {
+                void tools
+                  .run(
+                    () =>
+                      api(
+                        `/iniciativas/${id}/dossie/fechar`,
+                        'POST',
+                      ),
+                    'Dossiê fechado.',
+                  )
+                  .catch(() => {})
               }
             }}
           >
@@ -856,7 +884,6 @@ function DossierPanel({
             onClick={() =>
               tools.open({
                 title: 'Reabrir dossiê',
-
                 fields: [
                   {
                     name: 'motivo',
@@ -865,7 +892,6 @@ function DossierPanel({
                     required: true,
                   },
                 ],
-
                 save: body =>
                   tools.run(() =>
                     api(
@@ -888,34 +914,33 @@ function DossierPanel({
         <Empty>Sem alertas registrados.</Empty>
       )}
 
-      {project.alertas.map(item => (
+      {project.alertas.map(alert => (
         <article
           className="record"
-          key={item.id_alerta}
+          key={alert.id_alerta}
         >
           <div>
             <Badge>
-              {item.severidade} · {item.status}
+              {alert.severidade} · {alert.status}
             </Badge>
 
-            <h4>{item.titulo}</h4>
-            <p>{item.descricao}</p>
+            <h4>{alert.titulo}</h4>
+            <p>{alert.descricao}</p>
 
-            {item.resolucao && (
+            {alert.resolucao && (
               <small>
-                Resolução: {item.resolucao}
+                Resolução: {alert.resolucao}
               </small>
             )}
           </div>
 
           {manager &&
             !closed &&
-            item.status === 'Aberto' && (
+            alert.status === 'Aberto' && (
               <button
                 onClick={() =>
                   tools.open({
                     title: 'Resolver alerta',
-
                     fields: [
                       {
                         name: 'resolucao',
@@ -925,11 +950,10 @@ function DossierPanel({
                         required: true,
                       },
                     ],
-
                     save: body =>
                       tools.run(() =>
                         api(
-                          `/alertas/${item.id_alerta}/resolver`,
+                          `/alertas/${alert.id_alerta}/resolver`,
                           'POST',
                           body,
                         ),
@@ -949,19 +973,22 @@ function DossierPanel({
         <Empty>Sem pareceres registrados.</Empty>
       )}
 
-      {project.pareceres.map(item => (
+      {project.pareceres.map(opinion => (
         <article
-          key={item.id_parecer}
+          key={opinion.id_parecer}
           className="record"
         >
           <div>
-            <Badge>{item.conclusao}</Badge>
-            <p>{item.conteudo}</p>
+            <Badge>{opinion.conclusao}</Badge>
+
+            <p>{opinion.conteudo}</p>
 
             <small>
-              Revisão {item.revisao_projeto} ·
-              Autor #{item.autor_id} ·{' '}
-              {date(item.criado_em)}
+              Revisão {opinion.revisao_projeto}
+              {' · '}
+              Autor #{opinion.autor_id}
+              {' · '}
+              {date(opinion.criado_em)}
             </small>
           </div>
         </article>
@@ -989,10 +1016,10 @@ function EvidencePanel({
   const manager = canManage(tools.user)
 
   const activeMarcoId = p.marcos.some(
-    milestone => milestone.id_marco === marcoId,
+    marco => marco.id_marco === marcoId,
   )
     ? marcoId
-    : (p.marcos[0]?.id_marco || 0)
+    : p.marcos[0]?.id_marco || 0
 
   async function upload(event: FormEvent) {
     event.preventDefault()
@@ -1027,43 +1054,39 @@ function EvidencePanel({
     }
   }
 
-  function edit(milestone?: Milestone) {
+  function edit(marco?: Milestone) {
     tools.open({
-      title: milestone
+      title: marco
         ? 'Editar marco'
         : 'Novo marco experimental',
-
       fields: [
         {
           name: 'titulo',
           label: 'Título',
           required: true,
-          value: milestone?.titulo,
+          value: marco?.titulo,
         },
         {
           name: 'periodo',
           label: 'Período',
           required: true,
-          value: milestone?.periodo,
+          value: marco?.periodo,
         },
         {
           name: 'descricao',
           label: 'Hipótese, experimento e resultados',
           type: 'textarea',
           required: true,
-          value: milestone?.descricao,
+          value: marco?.descricao,
         },
       ],
-
       save: body =>
         tools.run(() =>
           api(
             `/iniciativas/${p.id_iniciativa}/marcos${
-              milestone
-                ? `/${milestone.id_marco}`
-                : ''
+              marco ? `/${marco.id_marco}` : ''
             }`,
-            milestone ? 'PUT' : 'POST',
+            marco ? 'PUT' : 'POST',
             body,
           ),
         ),
@@ -1075,7 +1098,10 @@ function EvidencePanel({
       <section className="card">
         <div className="section-title">
           <div>
-            <span className="eyebrow">{p.codigo}</span>
+            <span className="eyebrow">
+              {p.codigo}
+            </span>
+
             <h2>Registro de evidências</h2>
           </div>
 
@@ -1100,6 +1126,7 @@ function EvidencePanel({
         >
           <label>
             Marco experimental
+
             <select
               required
               value={activeMarcoId}
@@ -1111,12 +1138,12 @@ function EvidencePanel({
                 Selecione um marco
               </option>
 
-              {p.marcos.map(milestone => (
+              {p.marcos.map(marco => (
                 <option
-                  key={milestone.id_marco}
-                  value={milestone.id_marco}
+                  key={marco.id_marco}
+                  value={marco.id_marco}
                 >
-                  {milestone.titulo}
+                  {marco.titulo}
                 </option>
               ))}
             </select>
@@ -1124,6 +1151,7 @@ function EvidencePanel({
 
           <label>
             Documento
+
             <input
               key={fileKey}
               type="file"
@@ -1162,25 +1190,25 @@ function EvidencePanel({
         )}
       </section>
 
-      {p.marcos.map(milestone => (
+      {p.marcos.map(marco => (
         <section
           className="card"
-          key={milestone.id_marco}
+          key={marco.id_marco}
         >
           <div className="section-title">
             <div>
               <Badge>
-                {milestone.status_validacao}
+                {marco.status_validacao}
               </Badge>
 
-              <h2>{milestone.titulo}</h2>
-              <small>{milestone.periodo}</small>
+              <h2>{marco.titulo}</h2>
+              <small>{marco.periodo}</small>
             </div>
 
             <div className="actions">
               <button
                 disabled={closed || tools.busy}
-                onClick={() => edit(milestone)}
+                onClick={() => edit(marco)}
               >
                 Editar marco
               </button>
@@ -1190,17 +1218,18 @@ function EvidencePanel({
                   disabled={
                     closed ||
                     tools.busy ||
-                    milestone.status_validacao ===
-                      'Validado'
+                    marco.status_validacao === 'Validado'
                   }
-                  onClick={() =>
-                    void tools.run(() =>
-                      api(
-                        `/iniciativas/${p.id_iniciativa}/marcos/${milestone.id_marco}/validar`,
-                        'POST',
-                      ),
-                    ).catch(() => {})
-                  }
+                  onClick={() => {
+                    void tools
+                      .run(() =>
+                        api(
+                          `/iniciativas/${p.id_iniciativa}/marcos/${marco.id_marco}/validar`,
+                          'POST',
+                        ),
+                      )
+                      .catch(() => {})
+                  }}
                 >
                   Validar marco
                 </button>
@@ -1208,45 +1237,50 @@ function EvidencePanel({
             </div>
           </div>
 
-          <p>{milestone.descricao}</p>
+          <p>{marco.descricao}</p>
 
-          {!milestone.evidencias.length && (
-            <Empty>Nenhuma evidência anexada.</Empty>
+          {!marco.evidencias.length && (
+            <Empty>
+              Nenhuma evidência anexada.
+            </Empty>
           )}
 
-          {milestone.evidencias.map(evidence => (
+          {marco.evidencias.map(evidencia => (
             <article
               className="record"
-              key={evidence.id_evidencia}
+              key={evidencia.id_evidencia}
             >
               <div>
-                <h4>{evidence.nome}</h4>
+                <h4>{evidencia.nome}</h4>
 
                 <small>
                   {number(
-                    evidence.tamanho_bytes / 1024,
-                  )}{' '}
-                  KiB · {evidence.status}
+                    evidencia.tamanho_bytes / 1024,
+                  )}
+                  {' KiB · '}
+                  {evidencia.status}
                 </small>
 
                 <code>
-                  SHA-256: {evidence.sha256}
+                  SHA-256: {evidencia.sha256}
                 </code>
               </div>
 
               <div className="actions">
                 <button
-                  onClick={() =>
-                    void tools.run(
-                      () =>
-                        download(
-                          evidence.id_evidencia,
-                          evidence.nome,
-                        ),
-                      'Download iniciado.',
-                    ).catch(() => {})
-                  }
                   disabled={tools.busy}
+                  onClick={() => {
+                    void tools
+                      .run(
+                        () =>
+                          download(
+                            evidencia.id_evidencia,
+                            evidencia.nome,
+                          ),
+                        'Download iniciado.',
+                      )
+                      .catch(() => {})
+                  }}
                 >
                   Baixar
                 </button>
@@ -1256,16 +1290,18 @@ function EvidencePanel({
                     disabled={
                       closed ||
                       tools.busy ||
-                      evidence.status === 'Validado'
+                      evidencia.status === 'Validado'
                     }
-                    onClick={() =>
-                      void tools.run(() =>
-                        api(
-                          `/evidencias/${evidence.id_evidencia}/validar`,
-                          'POST',
-                        ),
-                      ).catch(() => {})
-                    }
+                    onClick={() => {
+                      void tools
+                        .run(() =>
+                          api(
+                            `/evidencias/${evidencia.id_evidencia}/validar`,
+                            'POST',
+                          ),
+                        )
+                        .catch(() => {})
+                    }}
                   >
                     Validar
                   </button>
@@ -1302,7 +1338,6 @@ function FinancePanel({
       title: item
         ? 'Editar dispêndio'
         : 'Novo dispêndio',
-
       fields: [
         {
           name: 'descricao',
@@ -1339,7 +1374,6 @@ function FinancePanel({
           nullable: true,
         },
       ],
-
       save: body =>
         tools.run(() =>
           api(
@@ -1425,8 +1459,10 @@ function FinancePanel({
                   ? item.data.slice(0, 10)
                   : String(
                       (
-                        item as unknown as
-                        Record<string, unknown>
+                        item as unknown as Record<
+                          string,
+                          unknown
+                        >
                       )[field.name] ?? '',
                     ),
             }
@@ -1474,8 +1510,8 @@ function FinancePanel({
 
       {!p.ano_base && (
         <p className="notice">
-          Preencha o ano-base na edição do projeto
-          antes de registrar despesas ou horas.
+          Preencha o ano-base na edição do projeto antes
+          de registrar despesas ou horas.
         </p>
       )}
 
@@ -1500,17 +1536,20 @@ function FinancePanel({
                   !selected.length ||
                   selected.length > 100
                 }
-                onClick={() =>
-                  void tools.run(() =>
-                    api(
-                      '/timesheets/aprovar-lote',
-                      'POST',
-                      { ids: selected },
-                    ),
-                  )
+                onClick={() => {
+                  void tools
+                    .run(() =>
+                      api(
+                        '/timesheets/aprovar-lote',
+                        'POST',
+                        {
+                          ids: selected,
+                        },
+                      ),
+                    )
                     .then(() => setSelected([]))
                     .catch(() => {})
-                }
+                }}
               >
                 Aprovar selecionados ({selected.length})
               </button>
@@ -1538,9 +1577,7 @@ function FinancePanel({
                   <td>
                     <input
                       type="checkbox"
-                      aria-label={
-                        `Selecionar timesheet ${item.id_timesheet}`
-                      }
+                      aria-label={`Selecionar timesheet ${item.id_timesheet}`}
                       disabled={
                         closed ||
                         !manager ||
@@ -1550,13 +1587,13 @@ function FinancePanel({
                         item.id_timesheet,
                       )}
                       onChange={event =>
-                        setSelected(values =>
+                        setSelected(current =>
                           event.target.checked
                             ? [
-                                ...values,
+                                ...current,
                                 item.id_timesheet,
                               ]
-                            : values.filter(
+                            : current.filter(
                                 id =>
                                   id !== item.id_timesheet,
                               ),
@@ -1571,7 +1608,8 @@ function FinancePanel({
                     </strong>
 
                     <small>
-                      {item.colaborador_id} ·{' '}
+                      {item.colaborador_id}
+                      {' · '}
                       {item.cargo_regime}
                     </small>
                   </td>
@@ -1676,19 +1714,19 @@ function AuditPanel({
 }) {
   const [page, setPage] = useState(1)
 
-  const resource = useApi<Pagination<Audit>>(
+  const result = useApi<Pagination<Audit>>(
     `/auditoria?pagina=${page}&limite=20`,
     revision,
   )
 
-  if (resource.loading) {
+  if (result.loading) {
     return <Empty>Carregando logs…</Empty>
   }
 
-  if (resource.error || !resource.data) {
+  if (result.error || !result.data) {
     return (
       <p className="notice error">
-        {resource.error}
+        {result.error}
       </p>
     )
   }
@@ -1710,13 +1748,14 @@ function AuditPanel({
           </thead>
 
           <tbody>
-            {resource.data.dados.map(item => (
+            {result.data.dados.map(item => (
               <tr key={item.id_auditoria}>
                 <td>
                   {new Date(
                     item.criado_em,
                   ).toLocaleString('pt-BR')}
                 </td>
+
                 <td>#{item.usuario_id}</td>
                 <td>{item.acao}</td>
                 <td>{item.entidade}</td>
@@ -1727,11 +1766,11 @@ function AuditPanel({
         </table>
       </div>
 
-      {!resource.data.dados.length && <Empty />}
+      {!result.data.dados.length && <Empty />}
 
       <div className="pager">
         <span>
-          {resource.data.paginacao.total} eventos
+          {result.data.paginacao.total} eventos
         </span>
 
         <button
@@ -1746,7 +1785,7 @@ function AuditPanel({
         <button
           disabled={
             page >=
-            resource.data.paginacao.total_paginas
+            result.data.paginacao.total_paginas
           }
           onClick={() => setPage(value => value + 1)}
         >
@@ -1812,6 +1851,7 @@ function Workspace({
       const result = await work()
 
       setRevision(value => value + 1)
+
       setNotice({
         text: success,
         error: false,
@@ -1842,15 +1882,14 @@ function Workspace({
 
   const projects = all.filter(
     project =>
-      !year || String(project.ano_base) === year,
+      !year ||
+      String(project.ano_base) === year,
   )
 
   const filtered = projects.filter(project =>
     `${project.codigo} ${project.nome} ${project.classificacao_pd}`
       .toLocaleLowerCase('pt-BR')
-      .includes(
-        search.toLocaleLowerCase('pt-BR'),
-      ),
+      .includes(search.toLocaleLowerCase('pt-BR')),
   )
 
   const pages = Math.max(
@@ -1892,7 +1931,7 @@ function Workspace({
 
       save: body =>
         run(async () => {
-          const created = await api<Project>(
+          const saved = await api<Project>(
             `/iniciativas${
               project
                 ? `/${project.id_iniciativa}`
@@ -1902,9 +1941,9 @@ function Workspace({
             body,
           )
 
-          setSelectedId(created.id_iniciativa)
+          setSelectedId(saved.id_iniciativa)
 
-          return created
+          return saved
         }),
     })
   }
@@ -1924,7 +1963,9 @@ function Workspace({
     saveFile(
       new Blob(
         [JSON.stringify(result, null, 2)],
-        { type: 'application/json' },
+        {
+          type: 'application/json',
+        },
       ),
       `previa-interna-${year || 'todos'}.json`,
     )
@@ -1933,6 +1974,7 @@ function Workspace({
   const projectPicker = (
     <label className="project-picker">
       Projeto
+
       <select
         value={active?.id_iniciativa || ''}
         onChange={event =>
@@ -1982,23 +2024,29 @@ function Workspace({
                 <td>
                   <small>{project.codigo}</small>
                   <strong>{project.nome}</strong>
+
                   <small>
-                    {project.diretoria} /{' '}
+                    {project.diretoria}
+                    {' / '}
                     {project.gerencia}
                   </small>
                 </td>
 
-                <td>{project.classificacao_pd}</td>
+                <td>
+                  {project.classificacao_pd}
+                </td>
 
                 <td>
-                  {project.trl_inicial} →{' '}
+                  {project.trl_inicial}
+                  {' → '}
                   {project.score_trl}
                 </td>
 
                 <td>
                   {number(
                     project.elegibilidade_pct,
-                  )}%
+                  )}
+                  %
 
                   <progress
                     value={Number(
@@ -2091,7 +2139,7 @@ function Workspace({
 
           <span>
             <strong>BBTS | SGA-LB</strong>
-            <small>Lei do Bem · P&D</small>
+            <small>Lei do Bem · P&amp;D</small>
           </span>
         </a>
 
@@ -2103,12 +2151,15 @@ function Workspace({
           {screens
             .filter(
               item =>
-                item.id !== 'auditoria' || manager,
+                item.id !== 'auditoria' ||
+                manager,
             )
             .map(item => (
               <button
                 className={
-                  screen === item.id ? 'active' : ''
+                  screen === item.id
+                    ? 'active'
+                    : ''
                 }
                 onClick={() => navigate(item.id)}
                 key={item.id}
@@ -2116,6 +2167,7 @@ function Workspace({
                 <span aria-hidden="true">
                   {item.icon}
                 </span>
+
                 {item.label}
               </button>
             ))}
@@ -2144,6 +2196,7 @@ function Workspace({
           <div className="actions">
             <label>
               Ano-base
+
               <select
                 value={year}
                 onChange={event => {
@@ -2193,7 +2246,10 @@ function Workspace({
           </div>
         </header>
 
-        <main>
+        <main
+          id="main-content"
+          tabIndex={-1}
+        >
           <div className="page-title">
             <div>
               <span className="eyebrow">
@@ -2212,15 +2268,14 @@ function Workspace({
               </h1>
 
               <p>
-                Dados registrados no sistema
-                de acompanhamento de P&D.
+                Dados registrados no sistema de
+                acompanhamento de P&amp;D.
               </p>
             </div>
 
-            {[
-              'dashboard',
-              'projetos',
-            ].includes(screen) && (
+            {['dashboard', 'projetos'].includes(
+              screen,
+            ) && (
               <button
                 className="primary"
                 disabled={
@@ -2230,19 +2285,19 @@ function Workspace({
                 }
                 onClick={() => editProject(null)}
               >
-                + Novo projeto P&D
+                + Novo projeto P&amp;D
               </button>
             )}
           </div>
 
           {notice && (
             <div
-              role={notice.error ? 'alert' : 'status'}
-              className={
-                `notice ${
-                  notice.error ? 'error' : 'success'
-                }`
+              role={
+                notice.error ? 'alert' : 'status'
               }
+              className={`notice ${
+                notice.error ? 'error' : 'success'
+              }`}
             >
               {notice.text}
 
@@ -2256,7 +2311,9 @@ function Workspace({
           )}
 
           {data.loading || me.loading ? (
-            <Empty>Carregando dados da API…</Empty>
+            <Empty>
+              Carregando dados da API…
+            </Empty>
           ) : data.error || me.error ? (
             <p
               className="notice error"
@@ -2268,8 +2325,8 @@ function Workspace({
             <>
               {users.error && (
                 <p className="notice error">
-                  Não foi possível carregar responsáveis:
-                  {' '}{users.error}
+                  Não foi possível carregar
+                  responsáveis: {users.error}
                 </p>
               )}
 
@@ -2279,32 +2336,26 @@ function Workspace({
                     <Card
                       title="Projetos mapeados"
                       value={summary.count}
-                      note={
-                        `${summary.eligible} com score informado ≥ 85%`
-                      }
+                      note={`${summary.eligible} com score informado ≥ 85%`}
                     />
 
                     <Card
                       title="Dispêndios"
-                      value={money(summary.expenses)}
+                      value={money(
+                        summary.expenses,
+                      )}
                     />
 
                     <Card
                       title="Horas P&D"
-                      value={
-                        `${number(summary.hours)} h`
-                      }
-                      note={
-                        `${number(summary.approvedHours)} h aprovadas`
-                      }
+                      value={`${number(summary.hours)} h`}
+                      note={`${number(summary.approvedHours)} h aprovadas`}
                     />
 
                     <Card
                       title="Documentos"
                       value={summary.documents}
-                      note={
-                        `${summary.highRisk} projetos com risco alto informado`
-                      }
+                      note={`${summary.highRisk} projetos com risco alto informado`}
                     />
                   </div>
 
@@ -2338,9 +2389,10 @@ function Workspace({
                           />
 
                           <small>
-                            {track.count} projetos ·{' '}
-                            {number(track.hours)} h
-                            registradas
+                            {track.count} projetos
+                            {' · '}
+                            {number(track.hours)}
+                            {' h registradas'}
                           </small>
                         </article>
                       ))}
@@ -2365,8 +2417,13 @@ function Workspace({
                                 {alert.severidade}
                               </Badge>
 
-                              <h4>{alert.titulo}</h4>
-                              <p>{alert.descricao}</p>
+                              <h4>
+                                {alert.titulo}
+                              </h4>
+
+                              <p>
+                                {alert.descricao}
+                              </p>
                             </div>
 
                             <button
@@ -2384,7 +2441,8 @@ function Workspace({
 
                       {!summary.alerts.length && (
                         <Empty>
-                          Sem alertas abertos neste recorte.
+                          Sem alertas abertos neste
+                          recorte.
                         </Empty>
                       )}
                     </section>
@@ -2399,7 +2457,11 @@ function Workspace({
                       {[
                         [1, 3, 'Conceituação'],
                         [4, 6, 'Desenvolvimento'],
-                        [7, 9, 'Validação e operação'],
+                        [
+                          7,
+                          9,
+                          'Validação e operação',
+                        ],
                       ].map(([min, max, label]) => (
                         <div
                           className="trl-column"
@@ -2420,7 +2482,8 @@ function Workspace({
                                   project.score_trl <=
                                     Number(max),
                               ).length
-                            } projetos
+                            }
+                            {' projetos'}
                           </strong>
 
                           {projects
@@ -2458,9 +2521,10 @@ function Workspace({
                   </section>
 
                   <p className="muted">
-                    Economia fiscal e índice geral de glosa:
-                    não calculados. Os scores são informados
-                    pela equipe.
+                    Economia fiscal e índice geral
+                    de glosa: não calculados. Os
+                    scores são informados pela
+                    equipe.
                   </p>
                 </>
               )}
@@ -2491,10 +2555,13 @@ function Workspace({
 
                   <section className="card">
                     <div className="section-title">
-                      <h2>Projetos da carteira</h2>
+                      <h2>
+                        Projetos da carteira
+                      </h2>
 
                       <label className="search">
                         Buscar projeto
+
                         <input
                           value={search}
                           onChange={event => {
@@ -2503,9 +2570,7 @@ function Workspace({
                             )
                             setPage(1)
                           }}
-                          placeholder={
-                            'Código, nome ou classificação'
-                          }
+                          placeholder="Código, nome ou classificação"
                         />
                       </label>
                     </div>
@@ -2520,7 +2585,9 @@ function Workspace({
                       <button
                         disabled={currentPage <= 1}
                         onClick={() =>
-                          setPage(value => value - 1)
+                          setPage(
+                            value => value - 1,
+                          )
                         }
                       >
                         Anterior
@@ -2531,9 +2598,13 @@ function Workspace({
                       </span>
 
                       <button
-                        disabled={currentPage >= pages}
+                        disabled={
+                          currentPage >= pages
+                        }
                         onClick={() =>
-                          setPage(value => value + 1)
+                          setPage(
+                            value => value + 1,
+                          )
                         }
                       >
                         Próxima
@@ -2595,26 +2666,27 @@ function Workspace({
                     <Badge>Prévia interna</Badge>
 
                     <h2>
-                      Consolidação dos projetos registrados
+                      Consolidação dos projetos
+                      registrados
                     </h2>
 
                     <p>
                       O JSON é obtido do backend.
-                      Não é um arquivo oficial de submissão
-                      ao MCTI. A impressão gera uma ficha
-                      de acompanhamento.
+                      Não é um arquivo oficial de
+                      submissão ao MCTI. A impressão
+                      gera uma ficha de acompanhamento.
                     </p>
 
                     <div className="actions">
                       <button
                         className="primary"
                         disabled={busy}
-                        onClick={() =>
+                        onClick={() => {
                           void run(
                             report,
                             'Prévia interna exportada.',
                           ).catch(() => {})
-                        }
+                        }}
                       >
                         Exportar JSON
                       </button>
@@ -2635,14 +2707,14 @@ function Workspace({
 
                     <Card
                       title="Dispêndios"
-                      value={money(summary.expenses)}
+                      value={money(
+                        summary.expenses,
+                      )}
                     />
 
                     <Card
                       title="Horas aprovadas"
-                      value={
-                        `${number(summary.approvedHours)} h`
-                      }
+                      value={`${number(summary.approvedHours)} h`}
                     />
 
                     <Card
@@ -2661,52 +2733,29 @@ function Workspace({
                 </>
               )}
 
-              {screen === 'auditoria' && (
-                manager ? (
+              {screen === 'auditoria' &&
+                (manager ? (
                   <AuditPanel revision={revision} />
                 ) : (
                   <p className="notice error">
                     Acesso restrito a gestores
                     e administradores.
                   </p>
-                )
-              )}
+                ))}
 
               {screen === 'perfil' && (
-                <section className="card profile">
-                  <div className="avatar large">
-                    {user.nome.slice(0, 1)}
-                  </div>
+                <ProfilePanel
+                  user={user}
+                  onUpdated={() =>
+                    setRevision(
+                      value => value + 1,
+                    )
+                  }
+                />
+              )}
 
-                  <h2>{user.nome}</h2>
-
-                  <div className="detail-grid">
-                    <span>
-                      E-mail
-                      <strong>{user.email}</strong>
-                    </span>
-
-                    <span>
-                      Perfil
-                      <strong>{user.perfil}</strong>
-                    </span>
-
-                    <span>
-                      Identificação
-                      <strong>#{user.id_usuario}</strong>
-                    </span>
-                  </div>
-
-                  <p>
-                    Dados consultados na API.
-                    Edição de perfil, foto e recuperação
-                    de senha ainda não estão disponíveis.
-                  </p>
-
-                  <button onClick={logout}>
-                    Encerrar sessão
-                  </button>
-                </section>
+              {screen === 'consultas' && (
+                <PublicQueries />
               )}
             </>
           )}
@@ -2724,6 +2773,13 @@ function Workspace({
 }
 
 export default function App() {
+  const [resetToken, setResetToken] = useState(
+    () =>
+      new URLSearchParams(
+        window.location.hash.slice(1),
+      ).get('redefinir-senha') || '',
+  )
+
   const [session, setSession] =
     useState<Session | null>(readSession)
 
@@ -2735,12 +2791,25 @@ export default function App() {
       clear,
     )
 
-    return () =>
+    return () => {
       window.removeEventListener(
         'sgalb:logout',
         clear,
       )
+    }
   }, [])
+
+  if (resetToken) {
+    return (
+      <ResetPassword
+        token={resetToken}
+        onComplete={() => {
+          logout()
+          setResetToken('')
+        }}
+      />
+    )
+  }
 
   return session ? (
     <Workspace session={session} />

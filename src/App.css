@@ -917,3 +917,14 @@ progress::-webkit-progress-value {
   body { background: #fff; }
   table { font-size: 10px; }
 }
+
+.account-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.account-fields > .actions {
+  margin: 18px 0 24px;
+}
