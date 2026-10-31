@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<title>SGA-LB | Timesheets & Dispêndios</title><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-low": "#f2f3ff", "surface-tint": "#0053db", "tertiary-fixed": "#d3e4fe", "primary-fixed": "#dbe1ff", "on-tertiary": "#ffffff", "error-container": "#ffdad6", "surface-container-lowest": "#ffffff", "secondary-fixed": "#dce1ff", "on-surface": "#131b2e", "on-secondary": "#ffffff", "on-tertiary-fixed": "#0b1c30", "on-background": "#131b2e", "on-secondary-container": "#fffbff", "error": "#ba1a1a", "primary-fixed-dim": "#b4c5ff", "on-tertiary-fixed-variant": "#38485d", "primary-container": "#2563eb", "surface-dim": "#d2d9f4", "surface-container": "#eaedff", "on-error": "#ffffff", "on-secondary-fixed": "#001551", "on-primary": "#ffffff", "surface-container-high": "#e2e7ff", "outline": "#737686", "secondary": "#1d4ed8", "on-error-container": "#93000a", "inverse-primary": "#b4c5ff", "background": "#faf8ff", "on-tertiary-container": "#e9f0ff", "on-primary-fixed": "#00174b", "tertiary": "#46566c", "secondary-fixed-dim": "#b7c4ff", "primary": "#004ac6", "surface-container-highest": "#dae2fd", "outline-variant": "#c3c6d7", "surface": "#faf8ff", "surface-variant": "#dae2fd", "tertiary-fixed-dim": "#b7c8e1", "on-primary-container": "#eeefff", "on-surface-variant": "#434655", "inverse-surface": "#283044", "secondary-container": "#4069f2", "inverse-on-surface": "#eef0ff", "on-secondary-fixed-variant": "#0039b5", "on-primary-fixed-variant": "#003ea8", "surface-bright": "#faf8ff", "tertiary-container": "#5e6e85" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "16px", "space-lg": "24px", "space-xs": "4px", "gutter": "1rem", "space-sm": "8px", "space-xl": "32px", "margin": "1.5rem" }, "fontFamily": { "typescale.title.small": ["Inter"], "typescale.button.base": ["Inter"], "typescale.label.small": ["Inter"], "typescale.paragraph.base": ["Inter"], "typescale.title.large": ["Inter"], "typescale.title.base": ["Inter"], "typescale.paragraph.small": ["Inter"] }, "fontSize": { "typescale.title.small": ["15px", {"lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "600"}], "typescale.button.base": ["13px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500"}], "typescale.label.small": ["11px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}], "typescale.paragraph.base": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}], "typescale.title.large": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "typescale.title.base": ["18px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "typescale.paragraph.small": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}] } } } };</script></head><body class="bg-background font-typescale.paragraph.base text-typescale.paragraph.base text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-lowest"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[20px]">account_balance</span></div><div class="flex flex-col"><span class="font-typescale.title.small text-typescale.title.small text-on-surface leading-none">BBTS | SGA-LB</span><span class="font-typescale.label.small text-typescale.label.small text-on-surface-variant leading-tight mt-0.5">Lei do Bem • P&amp;D</span></div></div><div class="px-space-md py-space-sm"><div class="bg-surface-container-low px-space-sm py-1.5 rounded-lg flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-primary text-[16px]">calendar_today</span><span class="font-typescale.label.small text-typescale.label.small text-on-surface font-semibold">2024 / Ex. 2025</span></div><span class="font-typescale.label.small text-typescale.label.small px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">Ativo</span></div></div><div class="px-space-md py-space-xs"><span class="font-typescale.label.small text-typescale.label.small uppercase text-outline tracking-wider">Módulos de Apuração</span></div><nav class="px-space-sm flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg"><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="bem-radar" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">radar</span><span class="font-typescale.button.base text-typescale.button.base">BEM+ Radar</span></div><span class="font-typescale.label.small text-typescale.label.small px-1.5 py-0.5 rounded-lg bg-surface-container-highest text-on-surface">KPIs</span></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="elegibilidade-evidencias" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">verified</span><span class="font-typescale.button.base text-typescale.button.base">Elegibilidade &amp; Evidências</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="timesheets-dispendios" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px]">schedule</span><span class="font-typescale.button.base text-typescale.button.base">Timesheets &amp; Dispêndios</span></div></a></nav><div class="px-space-md pt-space-md pb-space-xs"><span class="font-typescale.label.small text-typescale.label.small uppercase text-outline tracking-wider">Conformidade &amp; Governança</span></div><nav class="px-space-sm flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="relatorios-formbr-mcti" href="#"><span class="material-symbols-outlined text-[18px]">description</span><span class="font-typescale.button.base text-typescale.button.base">Relatórios FormBR / MCTI</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="configuracoes-parametros" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-typescale.button.base text-typescale.button.base">Configurações de Parâmetros</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="auditoria-logs" href="#"><span class="material-symbols-outlined text-[18px]">policy</span><span class="font-typescale.button.base text-typescale.button.base">Auditoria &amp; Logs</span></a></nav></div><div class="p-space-md bg-surface-container-low"><div class="flex items-center gap-space-sm pb-space-sm border-b border-surface-container-high"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate leading-tight">Carlos Drummond</span><span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary truncate leading-tight">Analista P&amp;D</span></div><a href="#" title="Meu Perfil" class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-[18px]">settings</span></a></div><div class="py-1.5 flex flex-col gap-0.5"><a href="#" class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-typescale.button.base text-typescale.button.base"><span class="material-symbols-outlined text-[18px]">account_circle</span><span class="">Meu Perfil</span></a><button class="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-error hover:bg-error-container hover:text-on-error-container transition-colors font-typescale.button.base text-typescale.button.base text-left font-medium"><span class="material-symbols-outlined text-[18px]">logout</span><span class="">Sair da Conta</span></button></div><div class="pt-space-xs border-t border-surface-container-high mt-1"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-primary"></div><span class="font-typescale.label.small text-typescale.label.small text-on-surface font-medium">ERP/Ponto Integrado</span></div><span class="material-symbols-outlined text-outline text-[16px]">sync_saved_locally</span></div><div class="mt-1 flex items-center justify-between text-outline"><span class="font-typescale.paragraph.small text-typescale.paragraph.small">Esteira LB v2.4</span><span class="font-typescale.paragraph.small text-typescale.paragraph.small">Build 2025.1</span></div></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="w-full flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1.5 rounded-lg text-on-surface-variant"><span class="material-symbols-outlined text-outline text-[18px]">search</span><span class="font-typescale.paragraph.base text-typescale.paragraph.base text-outline">Buscar projetos, pesquisadores, evidências ou rubricas...</span><span class="ml-auto font-typescale.label.small text-typescale.label.small bg-surface-container px-1 rounded text-outline">/</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-1.5 bg-surface-container-high px-space-sm py-1 rounded-lg"><span class="material-symbols-outlined text-primary text-[18px]">event_available</span><span class="font-typescale.button.base text-typescale.button.base text-on-surface font-medium">Ano-Base 2024 / Exercício 2025</span><span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span></div><div class="relative flex items-center justify-center p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></div><div class="h-8 w-px bg-surface-container-high"></div><div class="flex items-center gap-space-sm"><div class="flex flex-col text-right"><span class="font-typescale.title.small text-typescale.title.small text-on-surface leading-tight">Carlos Drummond</span><span class="font-typescale.label.small text-typescale.label.small text-tertiary leading-tight">Analista P&amp;D / Controladoria</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div><a href="#" title="Meu Perfil" class="flex items-center justify-center p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[20px]">account_circle</span></a><button title="Sair da conta" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-error hover:bg-error-container/40 transition-colors font-typescale.button.base text-typescale.button.base font-medium"><span class="material-symbols-outlined text-[18px]">logout</span><span class="hidden sm:inline">Sair</span></button></div></header><main class="w-full pt-16 bg-surface px-space-lg py-space-md"><div class="flex flex-col w-full">
+<!-- Page Header Context -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between pb-space-lg gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs text-outline mb-1">
+<span class="font-typescale.label.small text-typescale.label.small tracking-widest uppercase text-tertiary">Lei do Bem • Artigo 17</span>
+<span class="text-outline">•</span>
+<span class="font-typescale.label.small text-typescale.label.small text-primary font-semibold">Competência Atual (Novembro/2024)</span>
+</div>
+<h1 class="font-typescale.title.large text-typescale.title.large text-on-surface">Central de Timesheets &amp; Dispêndios</h1>
+<p class="font-typescale.paragraph.base text-typescale.paragraph.base text-on-surface-variant mt-0.5">Apuração simplificada de dedicação técnica em P&amp;D e consolidação contábil da folha.</p>
+</div>
+<!-- Quick Filter Switcher -->
+<div class="flex items-center gap-space-sm bg-surface-container-low p-1 rounded-xl">
+<button class="status-tab px-3 py-1.5 rounded-lg font-typescale.button.base text-typescale.button.base bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all" id="filter-all" onclick="filterStatus('all')">Todos (6)</button>
+<button class="status-tab px-3 py-1.5 rounded-lg font-typescale.button.base text-typescale.button.base text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5" id="filter-pendente" onclick="filterStatus('Pendente')">
+        Pendentes
+        <span class="font-typescale.label.small text-typescale.label.small bg-error-container text-on-error-container px-1.5 py-0.2 rounded-full font-bold" id="pending-counter-badge">2</span>
+</button>
+<button class="status-tab px-3 py-1.5 rounded-lg font-typescale.button.base text-typescale.button.base text-on-surface-variant hover:text-on-surface transition-all" id="filter-homologado" onclick="filterStatus('Homologado')">Homologados</button>
+</div>
+</div>
+<!-- KPI Cards: Dual Ultra-Clean Focus -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg mb-space-xl">
+<!-- Card 1: Horas Homologadas -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex items-center justify-between relative overflow-hidden">
+<div class="flex flex-col gap-1 z-10">
+<div class="flex items-center gap-1.5 text-tertiary">
+<span class="material-symbols-outlined text-[18px] text-primary">schedule</span>
+<span class="font-typescale.label.small text-typescale.label.small uppercase tracking-wider text-outline font-semibold">Total de Horas Homologadas</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-typescale.title.large text-typescale.title.large text-[32px] text-on-surface font-bold tracking-tight" id="kpi-hours">28.450h</span>
+<span class="font-typescale.label.small text-typescale.label.small text-primary font-semibold bg-surface-container px-2 py-0.5 rounded-lg">94.2% da meta</span>
+</div>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-on-surface-variant">Base mensal consolidada: 42 projetos e 180 pesquisadores</span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">timer</span>
+</div>
+</div>
+<!-- Card 2: Dispêndio RH -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex items-center justify-between relative overflow-hidden">
+<div class="flex flex-col gap-1 z-10">
+<div class="flex items-center gap-1.5 text-tertiary">
+<span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
+<span class="font-typescale.label.small text-typescale.label.small uppercase tracking-wider text-outline font-semibold">Total Dispêndio RH Elegível</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-typescale.title.large text-typescale.title.large text-[32px] text-on-surface font-bold tracking-tight" id="kpi-cost">R$ 8.920.000</span>
+<span class="font-typescale.label.small text-typescale.label.small text-secondary font-semibold bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-lg">Excluídos encargos s/ CLT</span>
+</div>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-on-surface-variant">Valor apto para exclusão fiscal de IRPJ/CSLL (60% ~ 80%)</span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+</div>
+</div>
+<!-- Direct Table Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<!-- Action Bar inside Table Header -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm w-full sm:w-auto">
+<span class="font-typescale.title.base text-typescale.title.base text-on-surface">Pesquisadores &amp; Lançamentos do Mês</span>
+<span class="font-typescale.label.small text-typescale.label.small bg-surface-container-high text-on-surface px-2 py-0.5 rounded-full font-medium" id="row-count-badge">6 registros</span>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-secondary text-on-primary font-typescale.button.base text-typescale.button.base font-medium shadow-sm transition-colors" id="batch-approve-btn" onclick="homologarTodosPendentes()">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+<span class="">Homologar Pendentes</span>
+</button>
+</div>
+</div>
+<!-- Table Content -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left" id="timesheets-table">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant">
+<th class="py-3 px-space-lg font-typescale.label.small text-typescale.label.small uppercase tracking-wider">Colaborador</th>
+<th class="py-3 px-space-md font-typescale.label.small text-typescale.label.small uppercase tracking-wider">Projeto Alocado</th>
+<th class="py-3 px-space-md font-typescale.label.small text-typescale.label.small uppercase tracking-wider text-right">Horas no Mês</th>
+<th class="py-3 px-space-md font-typescale.label.small text-typescale.label.small uppercase tracking-wider text-center">Status</th>
+<th class="py-3 px-space-lg font-typescale.label.small text-typescale.label.small uppercase tracking-wider text-right">Ação</th>
+</tr>
+</thead>
+<tbody class="text-on-surface font-typescale.paragraph.base text-typescale.paragraph.base" id="table-body">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="Homologado" id="row-1">
+<td class="py-3.5 px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+                  MC
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate">Marina Castro</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-outline">Matrícula: BB-90421 • Cientista de Dados Sênior</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Motor de IA Preditiva para Fraudes PIX</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary">MCTI-PD-2024-0012</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-medium tabular-nums">
+              168h
+            </td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-surface-container-high text-primary font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Homologado
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-right">
+<button class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-surface-container text-outline cursor-not-allowed" disabled="">
+                Concluído
+              </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest" data-status="Pendente" id="row-2">
+<td class="py-3.5 px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+                  RA
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate">Rodrigo Alves</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-outline">Matrícula: BB-78310 • Arquiteto de Software</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Arquitetura Resiliente de Criptografia Quântica</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary">MCTI-PD-2024-0044</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-medium tabular-nums">
+              160h
+            </td>
+<td class="py-3.5 px-space-md text-center status-col">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-error-container text-on-error-container font-semibold">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+                Pendente
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-right action-col">
+<button class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-primary hover:bg-secondary text-on-primary font-medium transition-colors shadow-sm" onclick="homologarLinha('row-2', 160)">
+                Homologar
+              </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="Homologado" id="row-3">
+<td class="py-3.5 px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+                  LS
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate">Larissa Santana</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-outline">Matrícula: BB-55192 • Pesquisadora UX &amp; Acessibilidade</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Interface Multimodal Assistiva Bancária</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary">MCTI-PD-2024-0021</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-medium tabular-nums">
+              142h
+            </td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-surface-container-high text-primary font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Homologado
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-right">
+<button class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-surface-container text-outline cursor-not-allowed" disabled="">
+                Concluído
+              </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-lowest" data-status="Pendente" id="row-4">
+<td class="py-3.5 px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+                  GB
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate">Gabriel Batista</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-outline">Matrícula: BB-63801 • Engenheiro de Dados</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Motor de IA Preditiva para Fraudes PIX</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary">MCTI-PD-2024-0012</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-medium tabular-nums">
+              176h
+            </td>
+<td class="py-3.5 px-space-md text-center status-col">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-error-container text-on-error-container font-semibold">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+                Pendente
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-right action-col">
+<button class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-primary hover:bg-secondary text-on-primary font-medium transition-colors shadow-sm" onclick="homologarLinha('row-4', 176)">
+                Homologar
+              </button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="Homologado" id="row-5">
+<td class="py-3.5 px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+                  TN
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate">Thiago Neves</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-outline">Matrícula: BB-44910 • Especialista em Cibersegurança</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Arquitetura Resiliente de Criptografia Quântica</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary">MCTI-PD-2024-0044</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-medium tabular-nums">
+              154h
+            </td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-surface-container-high text-primary font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Homologado
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-right">
+<button class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-surface-container text-outline cursor-not-allowed" disabled="">
+                Concluído
+              </button>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-surface-container-low transition-colors" data-status="Homologado" id="row-6">
+<td class="py-3.5 px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+                  VF
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-typescale.title.small text-typescale.title.small text-on-surface truncate">Vanessa Faria</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-outline">Matrícula: BB-31998 • Pesquisadora NLP</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Processamento de Linguagem Natural em Contratos Bancários</span>
+<span class="font-typescale.paragraph.small text-typescale.paragraph.small text-tertiary">MCTI-PD-2024-0008</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right font-medium tabular-nums">
+              160h
+            </td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-surface-container-high text-primary font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Homologado
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-right">
+<button class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-surface-container text-outline cursor-not-allowed" disabled="">
+                Concluído
+              </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Direct Status Summary -->
+<div class="px-space-lg py-3 bg-surface-container-low flex items-center justify-between font-typescale.paragraph.small text-typescale.paragraph.small text-on-surface-variant">
+<span class="">Integração ERP/Folha sincronizada às 08:30 via SAP Connector.</span>
+<div class="flex items-center gap-space-md">
+<span class="">Critério MCTI: Portaria 341/2023</span>
+<span class="text-outline">•</span>
+<span class="text-primary font-medium">Exportar para FormBR</span>
+</div>
+</div>
+</div>
+<!-- Notification Toast (Hidden by Default) -->
+<div class="fixed bottom-6 right-6 bg-inverse-surface text-inverse-on-surface px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 transition-opacity duration-300 opacity-0 pointer-events-none z-50" id="toast">
+<span class="material-symbols-outlined text-primary-fixed">verified</span>
+<span class="font-typescale.button.base text-typescale.button.base font-normal" id="toast-text">Horas homologadas com sucesso!</span>
+</div>
+<script>
+    let pendingCount = 2;
+    let baseHours = 28450;
+    let baseCost = 8920000;
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    function updateCounters() {
+      const badge = document.getElementById('pending-counter-badge');
+      const batchBtn = document.getElementById('batch-approve-btn');
+      
+      if (badge) {
+        badge.textContent = pendingCount;
+        if (pendingCount === 0) {
+          badge.classList.remove('bg-error-container', 'text-on-error-container');
+          badge.classList.add('bg-surface-container-high', 'text-outline');
+        }
+      }
+
+      if (batchBtn) {
+        if (pendingCount === 0) {
+          batchBtn.disabled = true;
+          batchBtn.classList.remove('bg-primary', 'hover:bg-secondary', 'cursor-pointer');
+          batchBtn.classList.add('bg-surface-container', 'text-outline', 'cursor-not-allowed');
+        }
+      }
+
+      // Update KPI visual increments
+      document.getElementById('kpi-hours').textContent = baseHours.toLocaleString('pt-BR') + 'h';
+      document.getElementById('kpi-cost').textContent = 'R$ ' + baseCost.toLocaleString('pt-BR');
+    }
+
+    function homologarLinha(rowId, hours) {
+      const row = document.getElementById(rowId);
+      if (!row) return;
+
+      row.setAttribute('data-status', 'Homologado');
+      
+      const statusCol = row.querySelector('.status-col');
+      if (statusCol) {
+        statusCol.innerHTML = `
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-typescale.label.small text-typescale.label.small bg-surface-container-high text-primary font-semibold">
+            <span class="material-symbols-outlined text-[14px]">check_circle</span>
+            Homologado
+          </span>
+        `;
+      }
+
+      const actionCol = row.querySelector('.action-col');
+      if (actionCol) {
+        actionCol.innerHTML = `
+          <button disabled class="px-3 py-1 rounded-lg font-typescale.button.base text-typescale.button.base bg-surface-container text-outline cursor-not-allowed">
+            Concluído
+          </button>
+        `;
+      }
+
+      if (pendingCount > 0) pendingCount--;
+      baseHours += hours;
+      baseCost += Math.round(hours * 98.5); // approximate valor/hora técnica
+
+      updateCounters();
+      showToast('Timesheet de ' + hours + 'h homologado com sucesso.');
+    }
+
+    function homologarTodosPendentes() {
+      if (pendingCount === 0) return;
+
+      const rows = document.querySelectorAll('#table-body tr[data-status="Pendente"]');
+      rows.forEach(row => {
+        const id = row.getAttribute('id');
+        if (id === 'row-2') homologarLinha('row-2', 160);
+        if (id === 'row-4') homologarLinha('row-4', 176);
+      });
+      showToast('Todos os timesheets pendentes foram homologados!');
+    }
+
+    function filterStatus(status) {
+      const rows = document.querySelectorAll('#table-body tr');
+      const tabs = document.querySelectorAll('.status-tab');
+
+      // Update Tab Styles
+      tabs.forEach(tab => {
+        tab.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+        tab.classList.add('text-on-surface-variant');
+      });
+
+      const activeTab = document.getElementById('filter-' + status.toLowerCase());
+      if (activeTab) {
+        activeTab.classList.add('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+        activeTab.classList.remove('text-on-surface-variant');
+      }
+
+      let count = 0;
+      rows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status');
+        if (status === 'all' || rowStatus === status) {
+          row.style.display = '';
+          count++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const countBadge = document.getElementById('row-count-badge');
+      if (countBadge) {
+        countBadge.textContent = count + ' ' + (count === 1 ? 'registro' : 'registros');
+      }
+    }
+  </script>
+</div></main></div>
+
+
+<script>
+(function () {
+  const routes = {
+    'bem-radar': 'dashboard.html', 'radar': 'dashboard.html',
+    'elegibilidade-evidencias': 'elegibilidade.html', 'elegibilidade': 'elegibilidade.html',
+    'cadastro-evidencias': 'evidencias.html', 'evidencias': 'evidencias.html',
+    'timesheets-dispendios': 'timesheets.html', 'timesheets': 'timesheets.html',
+    'relatorios-formbr-mcti': 'relatorios.html', 'relatorios-mcti': 'relatorios.html',
+    'perfil': 'perfil.html', 'logout': 'login.html'
+  };
+  document.addEventListener('click', function (event) {
+    const link = event.target.closest('a');
+    if (!link) return;
+    if (link.getAttribute('href') === '#recuperar-senha') {
+      event.preventDefault(); window.parent.postMessage({ type: 'SGALB_NAVIGATE', page: 'recuperar-senha.html' }, '*'); return;
+    }
+    if (link.getAttribute('href') === '#login') {
+      event.preventDefault(); window.parent.postMessage({ type: 'SGALB_NAVIGATE', page: 'login.html' }, '*'); return;
+    }
+    const path = link.getAttribute('data-path');
+    if (path && routes[path]) {
+      event.preventDefault(); window.parent.postMessage({ type: 'SGALB_NAVIGATE', page: routes[path] }, '*'); return;
+    }
+    if (path && !routes[path]) {
+      event.preventDefault(); window.parent.postMessage({ type: 'SGALB_NOTICE', message: 'Esta seção ainda não está entre as oito telas disponíveis.' }, '*');
+    }
+  });
+})();
+</script>
+</body></html>
