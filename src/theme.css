@@ -1,0 +1,437 @@
+:root {
+  color-scheme: light;
+
+  --bb-blue: #465eff;
+  --bb-yellow: #fcfc30;
+
+  --page: #f5f7fc;
+  --surface: #ffffff;
+  --soft: #eef1ff;
+  --field: #f8f9fd;
+
+  --text: #18233b;
+  --muted: #596780;
+  --line: #dce2ef;
+  --accent: #3048d5;
+
+  --success-bg: #eaf8ef;
+  --success-text: #21613c;
+  --warning-bg: #fff8df;
+  --warning-text: #795b16;
+  --error-bg: #fff0f0;
+  --error-text: #a02638;
+
+  color: var(--text);
+  background: var(--page);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --page: #0b1220;
+  --surface: #142039;
+  --soft: #1d2d49;
+  --field: #101b30;
+
+  --text: #edf3ff;
+  --muted: #b4c1d8;
+  --line: #30415e;
+  --accent: #b6c1ff;
+
+  --success-bg: #15372c;
+  --success-text: #99e5bb;
+  --warning-bg: #3b321b;
+  --warning-text: #ffe39a;
+  --error-bg: #3d202d;
+  --error-text: #ffb7c1;
+}
+
+/* Fundo e controles */
+
+body {
+  background: var(--page);
+  color: var(--text);
+}
+
+button {
+  background: var(--surface);
+  color: var(--accent);
+  border-color: var(--line);
+}
+
+button:hover:not(:disabled) {
+  background: var(--soft);
+}
+
+button.primary,
+.brand-box,
+.avatar {
+  background: var(--bb-yellow);
+  color: #182963;
+  border-color: var(--bb-yellow);
+}
+
+button.primary:hover:not(:disabled) {
+  background: #eded22;
+  border-color: #eded22;
+}
+
+button.danger {
+  color: var(--error-text);
+}
+
+input,
+select,
+textarea,
+.password {
+  background: var(--field);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--bb-blue);
+}
+
+input[type='file']::file-selector-button {
+  background: var(--soft);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 6px 8px;
+  margin-right: 10px;
+}
+
+/* Textos */
+
+label,
+p,
+small,
+.muted,
+.eyebrow,
+.sidebar-label,
+.topbar,
+.pager,
+.empty,
+.record code,
+.detail-grid span {
+  color: var(--muted);
+}
+
+h1 {
+  color: var(--accent);
+}
+
+/* Navegação e painéis */
+
+.sidebar,
+.topbar,
+.card,
+.modal,
+.login-page {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+.topbar {
+  border-top: 3px solid var(--bb-yellow);
+}
+
+.sidebar footer,
+th,
+.trl-column,
+.detail-grid {
+  background: var(--soft);
+}
+
+.sidebar nav button {
+  color: var(--muted);
+}
+
+.sidebar nav button.active {
+  background: var(--bb-yellow);
+  color: #182963;
+}
+
+.sidebar footer button,
+.trl-column button,
+.project-picker select {
+  background: var(--surface);
+}
+
+/* Tabelas e indicadores */
+
+th {
+  color: var(--muted);
+}
+
+td,
+.record,
+.track {
+  border-color: var(--line);
+}
+
+.detail-grid strong {
+  color: var(--text);
+}
+
+.badge {
+  background: var(--soft);
+  color: var(--accent);
+}
+
+.track span,
+.trl-column > strong,
+.login-card details {
+  color: var(--accent);
+}
+
+progress,
+progress::-webkit-progress-bar {
+  background: var(--line);
+}
+
+progress::-webkit-progress-value {
+  background: var(--bb-blue);
+}
+
+progress::-moz-progress-bar {
+  background: var(--bb-blue);
+}
+
+:root[data-theme='dark'] progress::-webkit-progress-value {
+  background: var(--bb-yellow);
+}
+
+:root[data-theme='dark'] progress::-moz-progress-bar {
+  background: var(--bb-yellow);
+}
+
+/* Mensagens */
+
+.pending-list,
+.notice {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.notice.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.notice.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.success-text {
+  color: var(--success-text);
+}
+
+.notice button,
+.notice button:hover:not(:disabled) {
+  background: transparent;
+  color: inherit;
+}
+
+.modal-backdrop {
+  background: #050b19b8;
+}
+
+/* Login */
+
+.login-intro {
+  background: var(--bb-blue);
+  color: #ffffff;
+}
+
+.login-intro h1,
+.login-intro p,
+.login-note span {
+  color: #ffffff;
+}
+
+.login-intro .eyebrow,
+.login-note {
+  color: var(--bb-yellow);
+}
+
+.login-intro::after {
+  border-color: #fcfc302b;
+}
+
+.password button,
+.password button:hover:not(:disabled) {
+  background: transparent;
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline-color: var(--accent);
+}
+
+.login-intro :focus-visible {
+  outline-color: var(--bb-yellow);
+}
+
+/* Botão de tema */
+
+.theme-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  border-radius: 24px;
+  padding: 10px 16px;
+
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px #00000024;
+}
+
+.theme-toggle span {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--accent);
+}
+
+main:not(.login-page) {
+  padding-bottom: 85px;
+}
+
+.login-card {
+  padding-bottom: 85px;
+}
+
+/* Impressão sempre com fundo claro */
+
+@media print {
+  :root,
+  :root[data-theme='dark'] {
+    color-scheme: light;
+
+    --page: #ffffff;
+    --surface: #ffffff;
+    --soft: #f0f2f7;
+
+    --text: #18233b;
+    --muted: #596780;
+    --line: #dce2ef;
+    --accent: #3048d5;
+
+    --success-bg: #eaf8ef;
+    --success-text: #21613c;
+    --warning-bg: #fff8df;
+    --warning-text: #795b16;
+    --error-bg: #fff0f0;
+    --error-text: #a02638;
+  }
+
+  .theme-toggle {
+    display: none !important;
+  }
+}
+
+/* Amarelo mais suave e tipografia mais discreta */
+
+:root {
+  --bb-yellow: #f2df78;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+strong,
+button,
+label,
+.badge {
+  font-weight: 600;
+}
+
+/* Botões principais em azul */
+
+button.primary {
+  background: var(--bb-blue);
+  border-color: var(--bb-blue);
+  color: #ffffff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #354be0;
+  border-color: #354be0;
+}
+
+/* Amarelo apenas na lateral do item selecionado */
+
+.sidebar nav button.active {
+  background: var(--soft);
+  color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--bb-yellow);
+}
+
+/* Identificação com amarelo suave */
+
+.brand-box {
+  background: var(--bb-yellow);
+  color: #182963;
+}
+
+/* Avatar discreto */
+
+.avatar {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--line);
+}
+
+/* Cabeçalho sem a faixa amarela */
+
+.topbar {
+  border-top-color: var(--line);
+}
+
+/* Login com menos amarelo */
+
+.login-note {
+  color: #ffffff;
+}
+
+.login-intro::after {
+  border-color: #ffffff12;
+}
+
+/* Indicadores em azul suave no tema escuro */
+
+:root[data-theme='dark'] progress::-webkit-progress-value {
+  background: #95a5ff;
+}
+
+:root[data-theme='dark'] progress::-moz-progress-bar {
+  background: #95a5ff;
+}
