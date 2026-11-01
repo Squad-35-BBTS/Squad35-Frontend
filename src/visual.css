@@ -1,0 +1,245 @@
+/* Identidade visual inspirada na referência BBTS */
+
+:root {
+  --font-platform: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+
+  --brand-blue: #3231b9;
+  --brand-blue-hover: #272695;
+  --brand-yellow: #fcfc30;
+}
+
+/* Tipografia */
+
+:root,
+body,
+.auth-page {
+  font-family: var(--font-platform);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+strong {
+  font-weight: 600;
+}
+
+h1 {
+  letter-spacing: -0.6px;
+}
+
+h2 {
+  letter-spacing: -0.3px;
+}
+
+/* Tema claro */
+
+:root:not([data-high-contrast='true']) {
+  --bb-blue: #3231b9;
+  --bb-yellow: #ece68a;
+
+  --page: #f6f7fc;
+  --surface: #ffffff;
+  --soft: #efeffb;
+  --field: #fafaff;
+  --field-border: #8990ae;
+
+  --text: #20243c;
+  --muted: #59627c;
+  --line: #d9dded;
+  --accent: #3231b9;
+
+  --button-bg: #3231b9;
+  --button-hover: #272695;
+  --button-text: #ffffff;
+
+  --progress-fill: #3231b9;
+}
+
+/* Tema escuro */
+
+:root[data-theme='dark']:not([data-high-contrast='true']) {
+  --page: #0f1324;
+  --surface: #191e34;
+  --soft: #252b47;
+  --field: #13182c;
+  --field-border: #697599;
+
+  --text: #f1f3ff;
+  --muted: #bac2dc;
+  --line: #404b6c;
+  --accent: #b9baff;
+
+  --button-bg: #b9baff;
+  --button-hover: #d0d0ff;
+  --button-text: #171742;
+
+  --progress-fill: #b9baff;
+}
+
+/* Botões */
+
+:root:not([data-high-contrast='true']) button.primary {
+  background: var(--button-bg);
+  border-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+:root:not([data-high-contrast='true'])
+  button.primary:hover:not(:disabled) {
+  background: var(--button-hover);
+  border-color: var(--button-hover);
+}
+
+/* Campos */
+
+:root:not([data-high-contrast='true'])
+  :is(input, select, textarea, .password) {
+  border-color: var(--field-border);
+}
+
+.auth-form-shell .password input {
+  border: 0;
+}
+
+/* Cabeçalho */
+
+.auth-header {
+  background: var(--brand-blue);
+}
+
+.auth-brand {
+  color: var(--brand-yellow);
+  font-weight: 700;
+}
+
+/* Navegação */
+
+:root:not([data-high-contrast='true'])
+  .sidebar nav button.active {
+  background: var(--soft);
+  color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--brand-blue);
+}
+
+:root[data-theme='dark']:not([data-high-contrast='true'])
+  .sidebar nav button.active {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Identificação e avatar */
+
+:root:not([data-high-contrast='true'])
+  :is(.brand-box, .avatar) {
+  background: var(--soft);
+  color: var(--accent);
+}
+
+/* Indicadores */
+
+:root:not([data-high-contrast='true'])
+  progress::-webkit-progress-value {
+  background: var(--progress-fill);
+}
+
+:root:not([data-high-contrast='true'])
+  progress::-moz-progress-bar {
+  background: var(--progress-fill);
+}
+
+/* Foco de teclado */
+
+:root:not([data-high-contrast='true']) :focus-visible {
+  outline-color: var(--accent);
+}
+
+/* Apresentação do login */
+
+.auth-hero {
+  background:
+    radial-gradient(
+      ellipse at 20% 25%,
+      #30346c 0,
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      #15162d,
+      #202051 65%,
+      #32317d
+    );
+}
+
+.auth-hero h1 span {
+  color: #c4c6ff;
+}
+
+.auth-hero p {
+  color: #e0e3f5;
+}
+
+.auth-signature-line {
+  background: #e5dd85;
+}
+
+.auth-form-shell .login-card h2 {
+  font-weight: 600;
+}
+
+/* Leitura da plataforma */
+
+body {
+  font-size: 15px;
+}
+
+p {
+  font-size: 14px;
+}
+
+label {
+  font-size: 13px;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: 14px;
+}
+
+.sidebar nav button {
+  font-size: 14px;
+}
+
+table {
+  font-size: 13px;
+}
+
+small,
+.muted {
+  font-size: 12px;
+}
+
+/* Impressão com fundo claro */
+
+@media print {
+  :root:not([data-high-contrast='true']),
+  :root[data-theme='dark']:not([data-high-contrast='true']) {
+    --page: #ffffff;
+    --surface: #ffffff;
+    --soft: #f0f0f7;
+    --field: #ffffff;
+
+    --text: #20243c;
+    --muted: #4e556b;
+    --line: #c4c8d6;
+    --accent: #3231b9;
+  }
+}

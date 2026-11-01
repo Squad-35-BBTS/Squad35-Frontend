@@ -10,6 +10,11 @@ import './theme.css'
 import './branding.css'
 import './accessibility.css'
 
+import './theme.css'
+import './branding.css'
+import './accessibility.css'
+import './visual.css'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <a className="skip-link" href="#main-content">
