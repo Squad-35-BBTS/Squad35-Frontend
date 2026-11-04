@@ -1,4 +1,5 @@
 import type { User } from '../types'
+import { DEMO_MODE, demoResponse, demoUser } from './demo'
 
 const KEY = 'sgalb.session.v1'
 
@@ -12,6 +13,12 @@ export type Session = {
 }
 
 export function readSession(): Session | null {
+  if (DEMO_MODE) {
+  return {
+    token: 'demo-local',
+    usuario: demoUser,
+  }
+}
   try {
     const session = JSON.parse(
       sessionStorage.getItem(KEY) || 'null'
@@ -45,6 +52,11 @@ async function response(
   body?: unknown,
   authenticated = true,
 ) {
+
+  if (DEMO_MODE) {
+  return demoResponse(path, method)
+}
+
   const token = authenticated
     ? readSession()?.token
     : undefined

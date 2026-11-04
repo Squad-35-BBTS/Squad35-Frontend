@@ -243,3 +243,7 @@ small,
     --accent: #3231b9;
   }
 }
+
+.auth-brand-mark {
+  background: transparent;
+}

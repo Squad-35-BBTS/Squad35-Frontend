@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
+import { DEMO_MODE } from './lib/demo'
 
 import {
   api,
@@ -2250,6 +2251,13 @@ function Workspace({
           id="main-content"
           tabIndex={-1}
         >
+        {DEMO_MODE && (
+  <p className="notice" role="status">
+    Modo de demonstração: dados fictícios, somente visualização.
+    Para usar o backend, defina VITE_DEMO_MODE=false e reinicie
+    o frontend.
+  </p>
+)}
           <div className="page-title">
             <div>
               <span className="eyebrow">
