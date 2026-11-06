@@ -2220,6 +2220,7 @@ function Workspace({
               Ano-base
 
               <select
+                className="year-filter"
                 value={year}
                 onChange={event => {
                   setYear(event.target.value)
