@@ -247,6 +247,8 @@ strong {
   color: #fff;
   border-radius: 50%;
   font-weight: 700;
+  border: none;
+  cursor: pointer;
 }
 
 .avatar.large {
@@ -660,10 +662,6 @@ progress::-webkit-progress-value {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 22px;
-}
-
-.profile {
-  max-width: 850px;
 }
 
 .profile .detail-grid {

@@ -2163,10 +2163,10 @@ function Workspace({
         <nav>
           {screens
             .filter(
-              item =>
-                item.id !== 'auditoria' ||
-                manager,
-            )
+  item =>
+    item.id !== 'perfil' &&
+    (item.id !== 'auditoria' || manager),
+)
             .map(item => (
               <button
                 className={
@@ -2263,9 +2263,14 @@ function Workspace({
               Atualizar
             </button>
 
-            <span className="avatar">
-              {user.nome.slice(0, 1)}
-            </span>
+            <button
+  type="button"
+  className="avatar"
+  aria-label="Abrir meu perfil"
+  onClick={() => navigate('perfil')}
+>
+  {user.nome.slice(0, 1)}
+</button>
           </div>
         </header>
 
