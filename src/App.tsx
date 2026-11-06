@@ -1804,6 +1804,7 @@ function Workspace({
 }) {
   const [screen, setScreen] =
     useState<Screen>('dashboard')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const [year, setYear] = useState('')
   const [revision, setRevision] = useState(0)
@@ -1915,6 +1916,7 @@ function Workspace({
     setSearch('')
     setPage(1)
     setNotice(null)
+    setMenuOpen(false)
   }
 
   function editProject(project: Project | null) {
@@ -2127,7 +2129,17 @@ function Workspace({
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      {menuOpen && (
+        <button
+          className="sidebar-backdrop"
+          aria-label="Fechar menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`sidebar ${menuOpen ? 'is-open' : ''}`}
+      >
         <a
           href="#"
           className="brand"
@@ -2190,6 +2202,15 @@ function Workspace({
 
       <div className="main-shell">
         <header className="topbar">
+          <button
+            className="menu-toggle"
+            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(value => !value)}
+          >
+            {menuOpen ? '✕' : '☰'}
+          </button>
+
           <span>
             Gestão de Pesquisa e Desenvolvimento
           </span>
