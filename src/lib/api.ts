@@ -198,3 +198,10 @@ export function encodeFile(file: File): Promise<string> {
     reader.readAsDataURL(file)
   })
 }
+
+export async function textoApi(
+  path: string,
+): Promise<string> {
+  const result = await response(path, 'GET')
+  return result.text()
+}

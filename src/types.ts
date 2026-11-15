@@ -13,6 +13,8 @@ export type Evidence = {
   sha256: string
   tamanho_bytes: number
   status: string
+  validado_em?: string | null
+  validado_por_id?: number | null
 }
 
 export type Milestone = {
@@ -22,6 +24,8 @@ export type Milestone = {
   descricao: string
   status_validacao: string
   evidencias: Evidence[]
+  validado_em?: string | null
+  validado_por_id?: number | null
 }
 
 export type Timesheet = {
@@ -36,6 +40,8 @@ export type Timesheet = {
   custo_apropriado: Decimal
   justificativa: string | null
   status: string
+  aprovado_em?: string | null
+  aprovado_por_id?: number | null
 }
 
 export type Expense = {

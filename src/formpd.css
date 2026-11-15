@@ -1,0 +1,167 @@
+.formpd-workspace {
+  min-width: 0;
+}
+
+.formpd-hero {
+  border-top: 4px solid var(--accent);
+}
+
+.formpd-completeness {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(120px, 0.6fr);
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+  margin: 22px 0;
+  background: var(--soft);
+  border-radius: 10px;
+}
+
+.formpd-completeness small {
+  display: block;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.formpd-completeness progress {
+  width: 100%;
+  height: 10px;
+}
+
+.formpd-details {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.formpd-workspace details > summary,
+.formpd-details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+  min-height: 44px;
+  padding-block: 10px;
+}
+
+.formpd-editor fieldset {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 20px;
+}
+
+.formpd-editor legend {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0 8px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.formpd-editor .form-grid label {
+  min-width: 0;
+}
+
+.formpd-editor .form-grid input,
+.formpd-editor textarea,
+.formpd-editor select {
+  width: 100%;
+  min-width: 0;
+}
+
+.formpd-editor h3 {
+  margin-top: 28px;
+}
+
+.formpd-pending {
+  list-style: none;
+  padding: 0;
+}
+
+.formpd-pending li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.formpd-pending li button {
+  flex-shrink: 0;
+}
+
+.formpd-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.formpd-empty {
+  padding-block: 38px;
+}
+
+.formpd-workspace .section-title select {
+  max-width: min(100%, 480px);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  .formpd-completeness {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .formpd-editor fieldset {
+    padding: 14px;
+  }
+
+  .formpd-pending li {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .formpd-workspace .actions > button {
+    flex: 1 1 180px;
+  }
+
+  .formpd-workspace .section-title,
+  .formpd-workspace .section-title label {
+    width: 100%;
+  }
+
+  .formpd-workspace .section-title select {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+@media print {
+  .formpd-editor,
+  .formpd-pending button {
+    display: none !important;
+  }
+}

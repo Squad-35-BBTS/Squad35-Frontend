@@ -1,0 +1,115 @@
+.portfolio-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(160px, 1fr)
+    minmax(150px, 1fr)
+    auto;
+  gap: 16px;
+  align-items: end;
+  margin: 20px 0;
+}
+
+.portfolio-filters .search {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.portfolio-filters label {
+  min-width: 0;
+}
+
+.portfolio-filters input,
+.portfolio-filters select {
+  width: 100%;
+  min-height: 44px;
+}
+
+.portfolio-filters + [role="status"] {
+  margin: 0 0 12px;
+}
+
+/* Linhas clicáveis da carteira */
+
+.project-row {
+  cursor: pointer;
+}
+
+.project-row:hover td,
+.project-row[aria-current="true"] td {
+  background: var(--soft, #eef0ff);
+}
+
+.project-row:focus-visible {
+  outline: 3px solid var(--accent, #3231b9);
+  outline-offset: -3px;
+}
+
+/* Progresso dos projetos */
+
+.portfolio-progress progress {
+  width: 100%;
+  height: 10px;
+}
+
+.progress-project {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line, #dce3f3);
+}
+
+.progress-project:last-of-type {
+  border-bottom: 0;
+}
+
+.progress-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  list-style: none;
+  padding: 0;
+  color: var(--muted);
+}
+
+.project-title-button {
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.project-details {
+  scroll-margin-top: 24px;
+}
+
+/* Tablet */
+
+@media (max-width: 1100px) {
+  .portfolio-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .portfolio-filters .search {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Celular */
+
+@media (max-width: 600px) {
+  .portfolio-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portfolio-filters .search {
+    grid-column: auto;
+  }
+
+  .portfolio-filters button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .progress-stages {
+    flex-direction: column;
+  }
+}
