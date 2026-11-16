@@ -12,6 +12,7 @@ import type { Project, User } from '../types'
 import ProfilePanel from './ProfilePanel'
 import PortfolioProgress from './PortfolioProgress'
 import FormpdEditor from './FormpdEditor'
+import LoadingScreen from './LoadingScreen'
 
 import '../formpd.css'
 
@@ -78,7 +79,9 @@ export default function AccessBoundary({
           Tentar novamente
         </button>
 
-        <button onClick={logout}>Sair</button>
+        <button onClick={logout}>
+          Sair
+        </button>
       </main>
     )
   }
@@ -86,7 +89,10 @@ export default function AccessBoundary({
   if (!access) {
     return (
       <main id="main-content">
-        <p role="status">Carregando permissões…</p>
+        <LoadingScreen
+          title="Preparando seu acesso"
+          description="Conferindo as permissões da sua conta."
+        />
       </main>
     )
   }
@@ -112,7 +118,9 @@ export default function AccessBoundary({
         Solicite a configuração ao administrador.
       </p>
 
-      <button onClick={logout}>Sair</button>
+      <button onClick={logout}>
+        Sair
+      </button>
     </main>
   )
 }
@@ -221,7 +229,10 @@ function RestrictedWorkspace({
   ].filter(item => access.telas.includes(item.id))
 
   function navigate(id: string) {
-    if (!access.telas.includes(id) || !canNavigate()) {
+    if (
+      !access.telas.includes(id) ||
+      !canNavigate()
+    ) {
       return
     }
 
@@ -315,7 +326,9 @@ function RestrictedWorkspace({
             navigate('dashboard')
           }}
         >
-          <span className="brand-box">LB</span>
+          <span className="brand-box">
+            LB
+          </span>
 
           <span>
             <strong>BBTS | SGA-LB</strong>
@@ -399,7 +412,10 @@ function RestrictedWorkspace({
                 ]
                   .sort((a, b) => b - a)
                   .map(value => (
-                    <option key={value} value={value}>
+                    <option
+                      key={value}
+                      value={value}
+                    >
                       {value}
                     </option>
                   ))}
@@ -435,19 +451,29 @@ function RestrictedWorkspace({
           </div>
 
           {error && (
-            <p className="notice error" role="alert">
+            <p
+              className="notice error"
+              role="alert"
+            >
               {error}
             </p>
           )}
 
           {notice && (
-            <p className="notice success" role="status">
+            <p
+              className="notice success"
+              role="status"
+            >
               {notice}
             </p>
           )}
 
           {loading ? (
-            <p role="status">Carregando dados…</p>
+            <LoadingScreen
+              inline
+              title="Carregando sua carteira"
+              description="Buscando os projetos disponíveis para sua conta."
+            />
           ) : !data ? (
             <button onClick={reload}>
               Tentar novamente
@@ -465,12 +491,19 @@ function RestrictedWorkspace({
                 <>
                   <div className="metrics">
                     <article className="card metric">
-                      <span>Projetos disponíveis</span>
-                      <strong>{projects.length}</strong>
+                      <span>
+                        Projetos disponíveis
+                      </span>
+
+                      <strong>
+                        {projects.length}
+                      </strong>
                     </article>
 
                     <article className="card metric">
-                      <span>Dossiês abertos</span>
+                      <span>
+                        Dossiês abertos
+                      </span>
 
                       <strong>
                         {
@@ -517,7 +550,9 @@ function RestrictedWorkspace({
               {screen === 'projetos' && (
                 <>
                   <section className="card">
-                    <h2>Projetos da carteira</h2>
+                    <h2>
+                      Projetos da carteira
+                    </h2>
 
                     <div className="portfolio-filters">
                       <label className="search">
@@ -547,6 +582,7 @@ function RestrictedWorkspace({
                             setClassification(
                               event.target.value,
                             )
+
                             setPage(1)
                           }}
                         >
@@ -635,9 +671,7 @@ function RestrictedWorkspace({
                             )
                             .map(project => (
                               <tr
-                                key={
-                                  project.id_iniciativa
-                                }
+                                key={project.id_iniciativa}
                                 className="project-row"
                                 tabIndex={0}
                                 aria-label={`Abrir projeto ${project.codigo}`}
@@ -675,9 +709,7 @@ function RestrictedWorkspace({
                                 </td>
 
                                 <td>
-                                  {
-                                    project.classificacao_pd
-                                  }
+                                  {project.classificacao_pd}
                                 </td>
 
                                 <td>
@@ -747,7 +779,9 @@ function RestrictedWorkspace({
                         {active.codigo} — {active.nome}
                       </h2>
 
-                      <p>{active.descricao}</p>
+                      <p>
+                        {active.descricao}
+                      </p>
 
                       {!auditor && (
                         <details className="formpd-details">
@@ -758,9 +792,7 @@ function RestrictedWorkspace({
 
                           <FormpdEditor
                             key={active.id_iniciativa}
-                            projectId={
-                              active.id_iniciativa
-                            }
+                            projectId={active.id_iniciativa}
                             technicalOnly
                             onSaved={() => {
                               setRevision(
@@ -995,9 +1027,17 @@ function RestrictedWorkspace({
                               {marco.status_validacao}
                             </span>
 
-                            <h2>{marco.titulo}</h2>
-                            <small>{marco.periodo}</small>
-                            <p>{marco.descricao}</p>
+                            <h2>
+                              {marco.titulo}
+                            </h2>
+
+                            <small>
+                              {marco.periodo}
+                            </small>
+
+                            <p>
+                              {marco.descricao}
+                            </p>
 
                             {marco.evidencias.map(
                               evidencia => (
@@ -1063,7 +1103,9 @@ function RestrictedWorkspace({
 
                     {screen === 'pessoas' && (
                       <section className="card">
-                        <h2>Pessoas e dedicação</h2>
+                        <h2>
+                          Pessoas e dedicação
+                        </h2>
 
                         <div
                           className="table-wrap"
@@ -1116,7 +1158,9 @@ function RestrictedWorkspace({
                                         'Não informada'}
                                     </td>
 
-                                    <td>{item.status}</td>
+                                    <td>
+                                      {item.status}
+                                    </td>
                                   </tr>
                                 ),
                               )}

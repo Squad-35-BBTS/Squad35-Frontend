@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useId,
-  useState,
-} from 'react'
-
+import { useEffect, useId, useState } from 'react'
 import type { FormEvent } from 'react'
 
 import { api } from '../lib/api'
@@ -20,6 +15,10 @@ import type {
   Primitive,
   Values,
 } from '../lib/formpdFields'
+
+import LoadingScreen from './LoadingScreen'
+
+import '../formpd.css'
 
 type ExpenseRef = {
   id_dispendio: number
@@ -43,6 +42,98 @@ type Props = {
   onSaved?: () => void
 }
 
+const technicalGroups = [
+  {
+    title: 'Identificação e objetivos',
+    description:
+      'Apresente o propósito e a área de atuação do projeto.',
+    keys: [
+      'objetivos',
+      'categoria_predominante_formpd',
+      'area_predominante_formpd',
+      'palavras_chave',
+      'natureza_predominante',
+    ],
+  },
+  {
+    title: 'Inovação e metodologia',
+    description:
+      'Descreva a abordagem investigada e como o trabalho foi realizado.',
+    keys: [
+      'elemento_inovador',
+      'metodologia',
+      'atividades_desenvolvidas_no_ano_base',
+    ],
+  },
+  {
+    title: 'Maturidade e resultados',
+    description:
+      'Registre o que foi observado e justifique a maturidade alcançada.',
+    keys: [
+      'trl_final_ano_base_confirmado',
+      'justificativa_trl',
+      'resultado_inovacao',
+      'resultado_economico',
+      'projeto_plurianual',
+    ],
+  },
+]
+
+const annualGroups = [
+  {
+    title: 'Identificação da empresa',
+    description:
+      'Informações cadastrais do exercício selecionado.',
+    keys: [
+      'razao_social',
+      'cnpj',
+      'tipo_empresa',
+      'situacao_empresa',
+      'origem_capital',
+    ],
+  },
+  {
+    title: 'Estrutura e informações do exercício',
+    description:
+      'Dados organizacionais e financeiros declarados pelo responsável.',
+    keys: [
+      'receita_operacional_bruta',
+      'receita_liquida',
+      'total_funcionarios',
+      'prejuizo_fiscal',
+      'estrutura_pd',
+      'fontes_financiamento',
+    ],
+  },
+  {
+    title: 'Aplicabilidade e incentivos',
+    description:
+      'Registre a análise e as informações conferidas para o exercício.',
+    keys: [
+      'pesquisador_exclusivo_aplicabilidade',
+      'pesquisador_exclusivo_detalhes',
+      'artigo_19a_aplicabilidade',
+      'artigo_19a_detalhes',
+      'incentivos_fiscais_detalhes',
+      'valor_incentivo_informado',
+    ],
+  },
+  {
+    title: 'Observações e revisão',
+    description:
+      'Conclua as observações e as conferências permitidas ao seu perfil.',
+    keys: [
+      'aperfeicoamento_lei_do_bem',
+      'modelo_referencia_conferido',
+    ],
+  },
+]
+
+const filled = (value: unknown) =>
+  value !== null &&
+  value !== undefined &&
+  String(value).trim() !== ''
+
 const message = (error: unknown) =>
   error instanceof Error
     ? error.message
@@ -56,32 +147,23 @@ function Fields({
 }: {
   fields: Field[]
   values: Values
-  change: (
-    name: string,
-    value: Primitive,
-  ) => void
+  change: (name: string, value: Primitive) => void
   prefix: string
 }) {
   return (
     <div className="form-grid">
       {fields.map(field => {
-        const id =
-          `${prefix}-${field.name}`
+        const id = `${prefix}-${field.name}`
+        const value = values[field.name]
 
-        const value =
-          values[field.name]
-
-        const description =
-          field.maxLength
-            ? `${id}-count`
-            : undefined
+        const describedBy = field.maxLength
+          ? `${id}-count`
+          : undefined
 
         return (
           <label
             className={
-              field.type === 'textarea'
-                ? 'full'
-                : ''
+              field.type === 'textarea' ? 'full' : ''
             }
             key={field.name}
             htmlFor={id}
@@ -92,7 +174,7 @@ function Fields({
               <textarea
                 id={id}
                 name={field.name}
-                aria-describedby={description}
+                aria-describedby={describedBy}
                 value={String(value ?? '')}
                 maxLength={field.maxLength}
                 onChange={event =>
@@ -114,16 +196,18 @@ function Fields({
                       ? 'false'
                       : String(value ?? '')
                 }
-                onChange={event =>
+                onChange={event => {
+                  const selected = event.target.value
+
                   change(
                     field.name,
-                    event.target.value === ''
+                    selected === ''
                       ? null
                       : field.type === 'boolean'
-                        ? event.target.value === 'true'
-                        : event.target.value,
+                        ? selected === 'true'
+                        : selected,
                   )
-                }
+                }}
               >
                 <option value="">
                   Não informado
@@ -131,23 +215,13 @@ function Fields({
 
                 {field.type === 'boolean' ? (
                   <>
-                    <option value="true">
-                      Sim
-                    </option>
-
-                    <option value="false">
-                      Não
-                    </option>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
                   </>
                 ) : (
                   <>
-                    <option>
-                      Aplicável
-                    </option>
-
-                    <option>
-                      Não aplicável
-                    </option>
+                    <option>Aplicável</option>
+                    <option>Não aplicável</option>
                   </>
                 )}
               </select>
@@ -155,8 +229,8 @@ function Fields({
               <input
                 id={id}
                 name={field.name}
-                aria-describedby={description}
                 type={field.type || 'text'}
+                aria-describedby={describedBy}
                 value={String(value ?? '')}
                 min={
                   field.name ===
@@ -191,8 +265,7 @@ function Fields({
               >
                 {String(value ?? '').length}
                 {' / '}
-                {field.maxLength}
-                {' caracteres'}
+                {field.maxLength} caracteres
               </small>
             )}
           </label>
@@ -213,8 +286,7 @@ export default function FormpdEditor({
 }: Props) {
   const prefix = useId()
 
-  const [retry, setRetry] =
-    useState(0)
+  const [retry, setRetry] = useState(0)
 
   const path = projectId
     ? `/iniciativas/${projectId}/formpd`
@@ -232,21 +304,16 @@ export default function FormpdEditor({
     error: '',
   })
 
-  const [draft, setDraft] = useState<
-    Record<string, unknown>
-  >({})
+  const [draft, setDraft] =
+    useState<Record<string, unknown>>({})
 
-  const [dirty, setDirty] =
-    useState(false)
+  const [dirty, setDirty] = useState(false)
+  const [busy, setBusy] = useState(false)
 
-  const [busy, setBusy] =
-    useState(false)
-
-  const [feedback, setFeedback] =
-    useState({
-      error: '',
-      success: '',
-    })
+  const [feedback, setFeedback] = useState({
+    error: '',
+    success: '',
+  })
 
   useEffect(() => {
     let active = true
@@ -255,30 +322,30 @@ export default function FormpdEditor({
 
     api<Preparation>(path)
       .then(item => {
-        if (active) {
-          setResult({
-            key,
-            item,
-            error: '',
-          })
+        if (!active) return
 
-          setDraft(item.dados)
-          setDirty(false)
+        setResult({
+          key,
+          item,
+          error: '',
+        })
 
-          setFeedback({
-            error: '',
-            success: '',
-          })
-        }
+        setDraft(item.dados)
+        setDirty(false)
+
+        setFeedback({
+          error: '',
+          success: '',
+        })
       })
       .catch(error => {
-        if (active) {
-          setResult({
-            key,
-            item: null,
-            error: message(error),
-          })
-        }
+        if (!active) return
+
+        setResult({
+          key,
+          item: null,
+          error: message(error),
+        })
       })
 
     return () => {
@@ -289,9 +356,7 @@ export default function FormpdEditor({
   useEffect(() => {
     if (!dirty && !busy) return
 
-    function unload(
-      event: BeforeUnloadEvent,
-    ) {
+    function unload(event: BeforeUnloadEvent) {
       event.preventDefault()
       event.returnValue = ''
     }
@@ -300,7 +365,8 @@ export default function FormpdEditor({
       if (
         busy ||
         !window.confirm(
-          'Existem alterações não salvas. Deseja sair e descartá-las?',
+          'Existem alterações não salvas. ' +
+          'Deseja sair e descartá-las?',
         )
       ) {
         event.preventDefault()
@@ -335,14 +401,10 @@ export default function FormpdEditor({
     : annualFields.filter(
         field =>
           manager ||
-          field.name !==
-            'modelo_referencia_conferido',
+          field.name !== 'modelo_referencia_conferido',
       )
 
-  function change(
-    name: string,
-    value: unknown,
-  ) {
+  function change(name: string, value: unknown) {
     setDraft(current => ({
       ...current,
       [name]: value,
@@ -364,36 +426,23 @@ export default function FormpdEditor({
     value: Primitive,
   ) {
     const rows =
-      (
-        draft[collection] as
-          | Row[]
-          | undefined
-      ) || []
+      (draft[collection] as Row[] | undefined) || []
 
     const row =
-      rows.find(
-        item => item[idName] === id,
-      ) || {
+      rows.find(item => item[idName] === id) || {
         [idName]: id,
       }
 
-    change(
-      collection,
-      [
-        ...rows.filter(
-          item => item[idName] !== id,
-        ),
-        {
-          ...row,
-          [name]: value,
-        },
-      ],
-    )
+    change(collection, [
+      ...rows.filter(item => item[idName] !== id),
+      {
+        ...row,
+        [name]: value,
+      },
+    ])
   }
 
-  async function save(
-    event: FormEvent,
-  ) {
+  async function save(event: FormEvent) {
     event.preventDefault()
 
     if (!result.item) return
@@ -406,38 +455,26 @@ export default function FormpdEditor({
     })
 
     try {
-      const keys = fields.map(
-        field => field.name,
-      )
+      const keys = fields.map(field => field.name)
 
-      if (
-        projectId &&
-        !technicalOnly
-      ) {
-        keys.push(
-          'rubricas',
-          'profissionais',
-        )
+      if (projectId && !technicalOnly) {
+        keys.push('rubricas', 'profissionais')
       }
 
-      const dados =
-        Object.fromEntries(
-          Object.entries(draft).filter(
-            ([campo]) =>
-              keys.includes(campo),
-          ),
-        )
+      const dados = Object.fromEntries(
+        Object.entries(draft).filter(
+          ([name]) => keys.includes(name),
+        ),
+      )
 
-      const item =
-        await api<Preparation>(
-          path,
-          'PUT',
-          {
-            revisao:
-              result.item.revisao,
-            dados,
-          },
-        )
+      const item = await api<Preparation>(
+        path,
+        'PUT',
+        {
+          revisao: result.item.revisao,
+          dados,
+        },
+      )
 
       setResult({
         key,
@@ -469,27 +506,25 @@ export default function FormpdEditor({
     return (
       <p className="notice">
         O preenchimento exige uma sessão real.
-        A demonstração permanece somente
-        para visualização.
+        A demonstração permanece somente para visualização.
       </p>
     )
   }
 
   if (result.key !== key) {
     return (
-      <p role="status">
-        Carregando formulário de preparação…
-      </p>
+      <LoadingScreen
+        inline
+        title="Carregando formulário"
+        description="Buscando os dados salvos desta preparação."
+      />
     )
   }
 
   if (!result.item) {
     return (
       <div>
-        <p
-          className="notice error"
-          role="alert"
-        >
+        <p className="notice error" role="alert">
           {result.error}
         </p>
 
@@ -515,6 +550,14 @@ export default function FormpdEditor({
     ).values(),
   ]
 
+  const groups = projectId
+    ? technicalGroups
+    : annualGroups
+
+  const completedFields = fields.filter(
+    field => filled(draft[field.name]),
+  ).length
+
   return (
     <form
       onSubmit={event => void save(event)}
@@ -525,38 +568,123 @@ export default function FormpdEditor({
           : 'Dados anuais da empresa'
       }
     >
+      <header className="formpd-editor-header">
+        <div>
+          <span className="formpd-kicker">
+            PREPARAÇÃO DO DOSSIÊ
+          </span>
+
+          <h3>
+            {projectId
+              ? 'Complemento técnico do projeto'
+              : 'Dados da empresa e do exercício'}
+          </h3>
+
+          <p>
+            Preencha por seção. Você pode salvar
+            e continuar depois.
+          </p>
+        </div>
+
+        <span
+          className={`formpd-save-state ${
+            dirty ? 'is-dirty' : ''
+          }`}
+        >
+          {busy
+            ? 'Salvando…'
+            : dirty
+              ? 'Alterações não salvas'
+              : 'Sem alterações pendentes'}
+        </span>
+      </header>
+
+      <div className="formpd-editor-meta">
+        <span>
+          Ano-base{' '}
+          <strong>
+            {year || item.ano_base || 'Não definido'}
+          </strong>
+        </span>
+
+        <span>
+          Revisão <strong>{item.revisao}</strong>
+        </span>
+
+        <span>
+          <strong>{completedFields}</strong>
+          {' de '}
+          {fields.length} campos preenchidos
+        </span>
+      </div>
+
       <p className="muted">
-        Ano-base {year || item.ano_base}
-        {' · '}
-        Revisão {item.revisao}.
-        {' '}
-        Você pode salvar o rascunho com
-        campos pendentes. Valores monetários
-        usam ponto decimal.
+        Campos não preenchidos permanecem pendentes.
+        O preenchimento não equivale a validação.
+        Valores monetários usam ponto decimal.
       </p>
 
       {item.fechado && (
         <p className="notice">
-          Dossiê fechado. Solicite a reabertura
-          ao gestor para alterar a preparação.
+          Dossiê fechado. Solicite a reabertura ao
+          gestor para alterar a preparação.
         </p>
       )}
 
-      <fieldset
-        disabled={busy || item.fechado}
-      >
+      <fieldset disabled={busy || item.fechado}>
         <legend>
           {projectId
             ? 'Dados técnicos para o FORMP&D'
             : 'Empresa e informações do exercício'}
         </legend>
 
-        <Fields
-          fields={fields}
-          values={draft as Values}
-          change={change}
-          prefix={prefix}
-        />
+        {groups.map((group, index) => {
+          const members = group.keys.flatMap(name =>
+            fields.filter(field => field.name === name),
+          )
+
+          if (!members.length) return null
+
+          const count = members.filter(
+            field => filled(draft[field.name]),
+          ).length
+
+          return (
+            <section
+              className="formpd-field-section"
+              key={group.title}
+              aria-labelledby={`${prefix}-group-${index}`}
+            >
+              <div className="formpd-section-heading">
+                <span
+                  className="formpd-section-number"
+                  aria-hidden="true"
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
+                <div>
+                  <h4 id={`${prefix}-group-${index}`}>
+                    {group.title}
+                  </h4>
+
+                  <p>{group.description}</p>
+                </div>
+
+                <span className="formpd-section-count">
+                  {count}/{members.length} preenchidos
+                </span>
+              </div>
+
+              <Fields
+                fields={members}
+                values={draft as Values}
+                change={change}
+                prefix={prefix}
+              />
+            </section>
+          )
+        })}
 
         {projectId && !technicalOnly && (
           <>
@@ -578,9 +706,7 @@ export default function FormpdEditor({
             )}
 
             {expenses.map(expense => (
-              <fieldset
-                key={expense.id_dispendio}
-              >
+              <fieldset key={expense.id_dispendio}>
                 <legend>
                   #{expense.id_dispendio}
                   {' — '}
@@ -588,9 +714,7 @@ export default function FormpdEditor({
                 </legend>
 
                 <Fields
-                  prefix={
-                    `${prefix}-d${expense.id_dispendio}`
-                  }
+                  prefix={`${prefix}-d${expense.id_dispendio}`}
                   fields={[
                     {
                       name: 'rubrica',
@@ -605,11 +729,9 @@ export default function FormpdEditor({
                   ]}
                   values={
                     (
-                      (
-                        draft.rubricas as
-                          | Row[]
-                          | undefined
-                      ) || []
+                      (draft.rubricas as
+                        | Row[]
+                        | undefined) || []
                     ).find(
                       row =>
                         row.id_dispendio ===
@@ -629,9 +751,7 @@ export default function FormpdEditor({
               </fieldset>
             ))}
 
-            <h3>
-              Complementação dos profissionais
-            </h3>
+            <h3>Complementação dos profissionais</h3>
 
             <p className="muted">
               As horas e os custos dos lançamentos
@@ -649,9 +769,7 @@ export default function FormpdEditor({
             )}
 
             {uniquePeople.map(person => (
-              <fieldset
-                key={person.colaborador_id}
-              >
+              <fieldset key={person.colaborador_id}>
                 <legend>
                   {person.colaborador_nome ||
                     person.colaborador_id}
@@ -661,9 +779,10 @@ export default function FormpdEditor({
 
                 <Fields
                   prefix={
-                    `${prefix}-p${encodeURIComponent(
+                    `${prefix}-p` +
+                    encodeURIComponent(
                       person.colaborador_id,
-                    )}`
+                    )
                   }
                   fields={[
                     {
@@ -687,15 +806,18 @@ export default function FormpdEditor({
                       maxLength: 191,
                     },
                     {
-                      name: 'horas_trabalhadas_ano_profissional',
+                      name:
+                        'horas_trabalhadas_ano_profissional',
                       label: 'Jornada total anual (horas)',
                       type: 'number',
                       max: 8784,
                       step: '0.01',
                     },
                     {
-                      name: 'valor_total_pago_profissional',
-                      label: 'Remuneração total anual (R$)',
+                      name:
+                        'valor_total_pago_profissional',
+                      label:
+                        'Remuneração total anual (R$)',
                       type: 'number',
                       step: '0.01',
                     },
@@ -707,11 +829,9 @@ export default function FormpdEditor({
                   ]}
                   values={
                     (
-                      (
-                        draft.profissionais as
-                          | Row[]
-                          | undefined
-                      ) || []
+                      (draft.profissionais as
+                        | Row[]
+                        | undefined) || []
                     ).find(
                       row =>
                         row.colaborador_id ===
@@ -735,33 +855,24 @@ export default function FormpdEditor({
       </fieldset>
 
       {dirty && (
-        <p
-          className="notice"
-          role="status"
-        >
+        <p className="notice" role="status">
           Há alterações ainda não salvas.
         </p>
       )}
 
       {feedback.error && (
-        <p
-          className="notice error"
-          role="alert"
-        >
+        <p className="notice error" role="alert">
           {feedback.error}
         </p>
       )}
 
       {feedback.success && (
-        <p
-          className="notice success"
-          role="status"
-        >
+        <p className="notice success" role="status">
           {feedback.success}
         </p>
       )}
 
-      <div className="actions">
+      <div className="actions formpd-editor-actions">
         <button
           type="submit"
           className="primary"
@@ -780,13 +891,12 @@ export default function FormpdEditor({
           type="button"
           disabled={busy}
           onClick={() => {
-            const podeRecarregar =
+            if (
               !dirty ||
               window.confirm(
                 'Descartar o rascunho e carregar os dados salvos?',
               )
-
-            if (podeRecarregar) {
+            ) {
               setDirty(false)
               setRetry(value => value + 1)
             }

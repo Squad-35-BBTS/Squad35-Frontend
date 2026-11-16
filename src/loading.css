@@ -1,0 +1,111 @@
+.loading-screen {
+  min-height: 70dvh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background: var(--page, #f5f7fc);
+  color: var(--text, #18233b);
+}
+
+.loading-content {
+  width: min(100%, 440px);
+  text-align: center;
+}
+
+.loading-emblem {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 24px;
+  display: grid;
+  place-items: center;
+}
+
+.loading-orbit {
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--line, #dce2ef);
+  border-top-color: var(--accent, #3048d5);
+  border-right-color: var(--accent, #3048d5);
+  border-radius: 50%;
+  animation: loading-orbit 1.15s linear infinite;
+}
+
+.loading-monogram {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 19px;
+  background: var(--soft, #eef1ff);
+  color: var(--accent, #3048d5);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.loading-brand {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--accent, #3048d5);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.loading-content h2 {
+  margin: 0 0 12px;
+  font-size: clamp(22px, 3vw, 28px);
+  letter-spacing: -0.03em;
+}
+
+.loading-content p {
+  margin: 0;
+  color: var(--muted, #596780);
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.loading-content .loading-delay {
+  margin-top: 18px;
+  padding: 12px 16px;
+  border: 1px solid var(--line, #dce2ef);
+  border-radius: 12px;
+  background: var(--surface, white);
+}
+
+.loading-inline {
+  min-height: 240px;
+  border: 1px solid var(--line, #dce2ef);
+  border-radius: 16px;
+  background: var(--surface, white);
+  margin-block: 16px;
+}
+
+.loading-inline .loading-emblem {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+}
+
+.loading-inline .loading-monogram {
+  width: 44px;
+  height: 44px;
+  font-size: 17px;
+  border-radius: 14px;
+}
+
+.loading-inline .loading-content h2 {
+  font-size: 20px;
+}
+
+@keyframes loading-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-orbit {
+    animation: none;
+  }
+}
