@@ -9,6 +9,7 @@ import PortfolioProgress from './components/PortfolioProgress';
 import AccessBoundary from './components/AccessBoundary';
 import FormpdPanel from './components/FormpdPanel';
 import FormpdEditor from './components/FormpdEditor';
+import LoadingScreen from './components/LoadingScreen';
 
 import {
   api,
@@ -209,7 +210,11 @@ function useApi<T>(path: string, revision = 0) {
       };
 }
 
-function Badge({ children }: { children: ReactNode }) {
+function Badge({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return <span className="badge">{children}</span>;
 }
 
@@ -249,7 +254,9 @@ function Modal({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -282,39 +289,97 @@ function Modal({
 
   return (
     <div className="modal-backdrop">
-      <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <section
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         <header>
           <h2 id="modal-title">{dialog.title}</h2>
-          <button onClick={close} disabled={busy} aria-label="Fechar formulário">×</button>
+
+          <button
+            onClick={close}
+            disabled={busy}
+            aria-label="Fechar formulário"
+          >
+            ×
+          </button>
         </header>
 
         <form onSubmit={submit}>
           <div className="form-grid">
             {dialog.fields.map(field => (
-              <label key={field.name} className={field.type === 'textarea' ? 'full' : ''}>
+              <label
+                key={field.name}
+                className={
+                  field.type === 'textarea' ? 'full' : ''
+                }
+              >
                 {field.label}
                 {field.required && ' *'}
 
                 {field.options ? (
-                  <select name={field.name} defaultValue={field.value ?? field.options[0]?.value} required={field.required}>
+                  <select
+                    name={field.name}
+                    defaultValue={
+                      field.value ??
+                      field.options[0]?.value
+                    }
+                    required={field.required}
+                  >
                     {field.options.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
                     ))}
                   </select>
                 ) : field.type === 'textarea' ? (
-                  <textarea name={field.name} defaultValue={field.value || ''} rows={4} required={field.required} />
+                  <textarea
+                    name={field.name}
+                    defaultValue={field.value || ''}
+                    rows={4}
+                    required={field.required}
+                  />
                 ) : (
-                  <input name={field.name} type={field.type || 'text'} defaultValue={field.value || ''} required={field.required} min={field.min} max={field.max} step={field.step} />
+                  <input
+                    name={field.name}
+                    type={field.type || 'text'}
+                    defaultValue={field.value || ''}
+                    required={field.required}
+                    min={field.min}
+                    max={field.max}
+                    step={field.step}
+                  />
                 )}
               </label>
             ))}
           </div>
 
-          {error && <p className="notice error" role="alert">{error}</p>}
+          {error && (
+            <p className="notice error" role="alert">
+              {error}
+            </p>
+          )}
 
           <footer>
-            <button type="button" onClick={close} disabled={busy}>Cancelar</button>
-            <button className="primary" disabled={busy}>{busy ? 'Salvando…' : 'Salvar'}</button>
+            <button
+              type="button"
+              onClick={close}
+              disabled={busy}
+            >
+              Cancelar
+            </button>
+
+            <button
+              className="primary"
+              disabled={busy}
+            >
+              {busy ? 'Salvando…' : 'Salvar'}
+            </button>
           </footer>
         </form>
       </section>
@@ -331,8 +396,12 @@ function Login({
   const [error, setError] = useState('');
   const [show, setShow] = useState(false);
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
+
+    if (busy) return;
 
     const data = new FormData(event.currentTarget);
 
@@ -362,42 +431,112 @@ function Login({
   return (
     <AuthLayout>
       <section className="login-card">
-        <span className="eyebrow">Acesso à plataforma</span>
-        <h2>Bem-vindo de volta</h2>
-        <p>Entre com o e-mail cadastrado no sistema.</p>
+        {busy && (
+          <LoadingScreen
+            inline
+            title="Entrando na plataforma"
+            description="Validando seu acesso. Aguarde um instante."
+          />
+        )}
 
-        <form onSubmit={submit}>
-          <label>
-            E-mail
-            <input type="email" name="email" autoComplete="username" required placeholder="nome@empresa.com.br" />
-          </label>
+        <div hidden={busy}>
+          <span className="eyebrow">
+            Acesso à plataforma
+          </span>
 
-          <label>
-            Senha
-            <div className="password">
-              <input type={show ? 'text' : 'password'} name="senha" autoComplete="current-password" required />
+          <h2>Bem-vindo de volta</h2>
 
-              <button type="button" onClick={() => setShow(value => !value)} aria-pressed={show}>
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M2 12c2.5-4.5 5.8-7 10-7s7.5 2.5 10 7c-2.5 4.5-5.8 7-10 7S4.5 16.5 2 12Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
+          <p>
+            Entre com o e-mail cadastrado no sistema.
+          </p>
 
-                  {show && (
-                    <path d="m3 3 18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  )}
-                </svg>
+          <form onSubmit={submit}>
+            <label>
+              E-mail
 
-                <span>{show ? 'Ocultar' : 'Mostrar'}</span>
-              </button>
-            </div>
-          </label>
+              <input
+                type="email"
+                name="email"
+                autoComplete="username"
+                required
+                placeholder="nome@empresa.com.br"
+              />
+            </label>
 
-          {error && <p role="alert" className="notice error">{error}</p>}
+            <label>
+              Senha
 
-          <button className="primary" disabled={busy}>{busy ? 'Entrando…' : 'Entrar'}</button>
-        </form>
+              <div className="password">
+                <input
+                  type={show ? 'text' : 'password'}
+                  name="senha"
+                  autoComplete="current-password"
+                  required
+                />
 
-        <RecoveryRequest />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShow(value => !value)
+                  }
+                  aria-pressed={show}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 12c2.5-4.5 5.8-7 10-7s7.5 2.5 10 7c-2.5 4.5-5.8 7-10 7S4.5 16.5 2 12Z"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinejoin="round"
+                    />
+
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                    />
+
+                    {show && (
+                      <path
+                        d="m3 3 18 18"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    )}
+                  </svg>
+
+                  <span>
+                    {show ? 'Ocultar' : 'Mostrar'}
+                  </span>
+                </button>
+              </div>
+            </label>
+
+            {error && (
+              <p
+                role="alert"
+                className="notice error"
+              >
+                {error}
+              </p>
+            )}
+
+            <button
+              className="primary"
+              disabled={busy}
+            >
+              {busy ? 'Entrando…' : 'Entrar'}
+            </button>
+          </form>
+
+          <RecoveryRequest />
+        </div>
       </section>
     </AuthLayout>
   );
@@ -597,11 +736,21 @@ function DossierPanel({
   );
 
   if (result.loading) {
-    return <Empty>Carregando dossiê…</Empty>;
+    return (
+      <LoadingScreen
+        inline
+        title="Carregando dossiê"
+        description="Buscando as informações e pendências deste projeto."
+      />
+    );
   }
 
   if (result.error || !result.data) {
-    return <p className="notice error">{result.error}</p>;
+    return (
+      <p className="notice error">
+        {result.error}
+      </p>
+    );
   }
 
   const {
@@ -635,7 +784,11 @@ function DossierPanel({
       ],
       save: body =>
         tools.run(() =>
-          api(`/iniciativas/${id}/pareceres`, 'POST', body),
+          api(
+            `/iniciativas/${id}/pareceres`,
+            'POST',
+            body,
+          ),
         ),
     });
   }
@@ -672,7 +825,11 @@ function DossierPanel({
       ],
       save: body =>
         tools.run(() =>
-          api(`/iniciativas/${id}/alertas`, 'POST', body),
+          api(
+            `/iniciativas/${id}/alertas`,
+            'POST',
+            body,
+          ),
         ),
     });
   }
@@ -681,46 +838,94 @@ function DossierPanel({
     <section className="card dossier">
       <div className="section-title">
         <div>
-          <span className="eyebrow">{project.codigo} · Revisão {project.revisao}</span>
+          <span className="eyebrow">
+            {project.codigo} · Revisão {project.revisao}
+          </span>
           <h2>{project.nome}</h2>
         </div>
 
         <Badge>{project.status_dossie}</Badge>
       </div>
 
-      <p>{project.barreira_incerteza || 'Barreira tecnológica ainda não descrita.'}</p>
+      <p>
+        {project.barreira_incerteza ||
+          'Barreira tecnológica ainda não descrita.'}
+      </p>
 
       <div className="detail-grid">
-        <span>Responsável<strong>{project.usuario_responsavel.nome}</strong></span>
-        <span>TRL<strong>{project.trl_inicial} → {project.score_trl}</strong></span>
-        <span>Elegibilidade informada<strong>{number(project.elegibilidade_pct)}%</strong></span>
-        <span>Risco informado<strong>{project.risco_glosa}</strong></span>
+        <span>
+          Responsável
+          <strong>
+            {project.usuario_responsavel.nome}
+          </strong>
+        </span>
+
+        <span>
+          TRL
+          <strong>
+            {project.trl_inicial} → {project.score_trl}
+          </strong>
+        </span>
+
+        <span>
+          Elegibilidade informada
+          <strong>
+            {number(project.elegibilidade_pct)}%
+          </strong>
+        </span>
+
+        <span>
+          Risco informado
+          <strong>{project.risco_glosa}</strong>
+        </span>
       </div>
 
       <h3>Pendências do dossiê</h3>
 
       {pendencias.length ? (
         <ul className="pending-list">
-          {pendencias.map(item => <li key={item}>{item}</li>)}
+          {pendencias.map(item => (
+            <li key={item}>{item}</li>
+          ))}
         </ul>
       ) : (
-        <p className="success-text">Nenhuma pendência encontrada.</p>
+        <p className="success-text">
+          Nenhuma pendência encontrada.
+        </p>
       )}
 
       <div className="actions">
-        {!closed && <button onClick={alert}>Cadastrar alerta</button>}
+        {!closed && (
+          <button onClick={alert}>
+            Cadastrar alerta
+          </button>
+        )}
 
-        {manager && !closed && <button onClick={opinion}>Emitir parecer</button>}
+        {manager && !closed && (
+          <button onClick={opinion}>
+            Emitir parecer
+          </button>
+        )}
 
         {manager && !closed && (
           <button
             className="primary"
-            disabled={!pronto_para_fechar || tools.busy}
+            disabled={
+              !pronto_para_fechar || tools.busy
+            }
             onClick={() => {
-              if (confirm('Fechar o dossiê desta revisão?')) {
+              if (
+                confirm(
+                  'Fechar o dossiê desta revisão?',
+                )
+              ) {
                 void tools
                   .run(
-                    () => api(`/iniciativas/${id}/dossie/fechar`, 'POST'),
+                    () =>
+                      api(
+                        `/iniciativas/${id}/dossie/fechar`,
+                        'POST',
+                      ),
                     'Dossiê fechado.',
                   )
                   .catch(() => {});
@@ -746,7 +951,11 @@ function DossierPanel({
                 ],
                 save: body =>
                   tools.run(() =>
-                    api(`/iniciativas/${id}/dossie/reabrir`, 'POST', body),
+                    api(
+                      `/iniciativas/${id}/dossie/reabrir`,
+                      'POST',
+                      body,
+                    ),
                   ),
               })
             }
@@ -758,56 +967,84 @@ function DossierPanel({
 
       <h3>Alertas</h3>
 
-      {!project.alertas.length && <Empty>Sem alertas registrados.</Empty>}
+      {!project.alertas.length && (
+        <Empty>Sem alertas registrados.</Empty>
+      )}
 
       {project.alertas.map(alert => (
-        <article className="record" key={alert.id_alerta}>
+        <article
+          className="record"
+          key={alert.id_alerta}
+        >
           <div>
-            <Badge>{alert.severidade} · {alert.status}</Badge>
+            <Badge>
+              {alert.severidade} · {alert.status}
+            </Badge>
+
             <h4>{alert.titulo}</h4>
             <p>{alert.descricao}</p>
-            {alert.resolucao && <small>Resolução: {alert.resolucao}</small>}
+
+            {alert.resolucao && (
+              <small>
+                Resolução: {alert.resolucao}
+              </small>
+            )}
           </div>
 
-          {manager && !closed && alert.status === 'Aberto' && (
-            <button
-              onClick={() =>
-                tools.open({
-                  title: 'Resolver alerta',
-                  fields: [
-                    {
-                      name: 'resolucao',
-                      label: 'Como a pendência foi resolvida?',
-                      type: 'textarea',
-                      required: true,
-                    },
-                  ],
-                  save: body =>
-                    tools.run(() =>
-                      api(`/alertas/${alert.id_alerta}/resolver`, 'POST', body),
-                    ),
-                })
-              }
-            >
-              Resolver
-            </button>
-          )}
+          {manager &&
+            !closed &&
+            alert.status === 'Aberto' && (
+              <button
+                onClick={() =>
+                  tools.open({
+                    title: 'Resolver alerta',
+                    fields: [
+                      {
+                        name: 'resolucao',
+                        label:
+                          'Como a pendência foi resolvida?',
+                        type: 'textarea',
+                        required: true,
+                      },
+                    ],
+                    save: body =>
+                      tools.run(() =>
+                        api(
+                          `/alertas/${alert.id_alerta}/resolver`,
+                          'POST',
+                          body,
+                        ),
+                      ),
+                  })
+                }
+              >
+                Resolver
+              </button>
+            )}
         </article>
       ))}
 
       <h3>Histórico de pareceres</h3>
 
-      {!project.pareceres.length && <Empty>Sem pareceres registrados.</Empty>}
+      {!project.pareceres.length && (
+        <Empty>Sem pareceres registrados.</Empty>
+      )}
 
       {project.pareceres.map(opinion => (
-        <article key={opinion.id_parecer} className="record">
+        <article
+          key={opinion.id_parecer}
+          className="record"
+        >
           <div>
             <Badge>{opinion.conclusao}</Badge>
             <p>{opinion.conteudo}</p>
+
             <small>
               Revisão {opinion.revisao_projeto}
-              {' · '}Autor #{opinion.autor_id}
-              {' · '}{date(opinion.criado_em)}
+              {' · '}
+              Autor #{opinion.autor_id}
+              {' · '}
+              {date(opinion.criado_em)}
             </small>
           </div>
         </article>
@@ -834,10 +1071,11 @@ function EvidencePanel({
   const closed = p.status_dossie === 'Fechado';
   const manager = canManage(tools.user);
 
-  const activeMarcoId =
-    p.marcos.some(marco => marco.id_marco === marcoId)
-      ? marcoId
-      : p.marcos[0]?.id_marco || 0;
+  const activeMarcoId = p.marcos.some(
+    marco => marco.id_marco === marcoId,
+  )
+    ? marcoId
+    : p.marcos[0]?.id_marco || 0;
 
   async function upload(event: FormEvent) {
     event.preventDefault();
@@ -845,7 +1083,9 @@ function EvidencePanel({
 
     try {
       if (!file || !activeMarcoId) {
-        throw new Error('Selecione um marco e um arquivo.');
+        throw new Error(
+          'Selecione um marco e um arquivo.',
+        );
       }
 
       const conteudo_base64 = await encodeFile(file);
@@ -875,7 +1115,6 @@ function EvidencePanel({
       title: marco
         ? 'Editar marco'
         : 'Novo marco experimental',
-
       fields: [
         {
           name: 'titulo',
@@ -897,11 +1136,12 @@ function EvidencePanel({
           value: marco?.descricao,
         },
       ],
-
       save: body =>
         tools.run(() =>
           api(
-            `/iniciativas/${p.id_iniciativa}/marcos${marco ? `/${marco.id_marco}` : ''}`,
+            `/iniciativas/${p.id_iniciativa}/marcos${
+              marco ? `/${marco.id_marco}` : ''
+            }`,
             marco ? 'PUT' : 'POST',
             body,
           ),
@@ -914,53 +1154,134 @@ function EvidencePanel({
       <section className="card">
         <div className="section-title">
           <div>
-            <span className="eyebrow">{p.codigo}</span>
+            <span className="eyebrow">
+              {p.codigo}
+            </span>
             <h2>Registro de evidências</h2>
           </div>
 
-          <button disabled={closed || tools.busy} onClick={() => edit()}>Novo marco</button>
+          <button
+            disabled={closed || tools.busy}
+            onClick={() => edit()}
+          >
+            Novo marco
+          </button>
         </div>
 
-        <p>O documento deve ser vinculado a um marco experimental. Limite de 5 MiB por arquivo. O servidor calcula o hash.</p>
+        <p>
+          O documento deve ser vinculado a um marco
+          experimental. Limite de 5 MiB por arquivo.
+          O servidor calcula o hash.
+        </p>
 
-        <form noValidate onSubmit={upload} className="upload-form">
+        <form
+          noValidate
+          onSubmit={upload}
+          className="upload-form"
+        >
           <label>
             Marco experimental
-            <select required value={activeMarcoId} onChange={event => setMarcoId(Number(event.target.value))}>
-              <option value={0}>Selecione um marco</option>
+
+            <select
+              required
+              value={activeMarcoId}
+              onChange={event =>
+                setMarcoId(
+                  Number(event.target.value),
+                )
+              }
+            >
+              <option value={0}>
+                Selecione um marco
+              </option>
+
               {p.marcos.map(marco => (
-                <option key={marco.id_marco} value={marco.id_marco}>{marco.titulo}</option>
+                <option
+                  key={marco.id_marco}
+                  value={marco.id_marco}
+                >
+                  {marco.titulo}
+                </option>
               ))}
             </select>
           </label>
 
           <label>
             Documento
-            <input key={fileKey} type="file" required disabled={closed} onChange={event => setFile(event.target.files?.[0] || null)} />
+
+            <input
+              key={fileKey}
+              type="file"
+              required
+              disabled={closed}
+              onChange={event =>
+                setFile(
+                  event.target.files?.[0] || null,
+                )
+              }
+            />
           </label>
 
-          <button className="primary" disabled={closed || tools.busy || !p.marcos.length}>Enviar evidência</button>
+          <button
+            className="primary"
+            disabled={
+              closed ||
+              tools.busy ||
+              !p.marcos.length
+            }
+          >
+            Enviar evidência
+          </button>
         </form>
 
-        {closed && <p className="notice">Dossiê fechado. Reabra para alterar os registros.</p>}
-        {error && <p className="notice error" role="alert">{error}</p>}
+        {closed && (
+          <p className="notice">
+            Dossiê fechado. Reabra para alterar
+            os registros.
+          </p>
+        )}
+
+        {error && (
+          <p
+            className="notice error"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
       </section>
 
       {p.marcos.map(marco => (
-        <section className="card" key={marco.id_marco}>
+        <section
+          className="card"
+          key={marco.id_marco}
+        >
           <div className="section-title">
             <div>
-              <Badge>{marco.status_validacao}</Badge>
+              <Badge>
+                {marco.status_validacao}
+              </Badge>
+
               <h2>{marco.titulo}</h2>
               <small>{marco.periodo}</small>
             </div>
 
             <div className="actions">
-              <button disabled={closed || tools.busy} onClick={() => edit(marco)}>Editar marco</button>
+              <button
+                disabled={closed || tools.busy}
+                onClick={() => edit(marco)}
+              >
+                Editar marco
+              </button>
 
               {manager && (
                 <button
-                  disabled={closed || tools.busy || marco.status_validacao === 'Validado'}
+                  disabled={
+                    closed ||
+                    tools.busy ||
+                    marco.status_validacao ===
+                      'Validado'
+                  }
                   onClick={() => {
                     void tools
                       .run(() =>
@@ -980,17 +1301,31 @@ function EvidencePanel({
 
           <p>{marco.descricao}</p>
 
-          {!marco.evidencias.length && <Empty>Nenhuma evidência anexada.</Empty>}
+          {!marco.evidencias.length && (
+            <Empty>
+              Nenhuma evidência anexada.
+            </Empty>
+          )}
 
           {marco.evidencias.map(evidencia => (
-            <article className="record" key={evidencia.id_evidencia}>
+            <article
+              className="record"
+              key={evidencia.id_evidencia}
+            >
               <div>
                 <h4>{evidencia.nome}</h4>
+
                 <small>
-                  {number(evidencia.tamanho_bytes / 1024)}
-                  {' KiB · '}{evidencia.status}
+                  {number(
+                    evidencia.tamanho_bytes / 1024,
+                  )}
+                  {' KiB · '}
+                  {evidencia.status}
                 </small>
-                <code>SHA-256: {evidencia.sha256}</code>
+
+                <code>
+                  SHA-256: {evidencia.sha256}
+                </code>
               </div>
 
               <div className="actions">
@@ -999,7 +1334,11 @@ function EvidencePanel({
                   onClick={() => {
                     void tools
                       .run(
-                        () => download(evidencia.id_evidencia, evidencia.nome),
+                        () =>
+                          download(
+                            evidencia.id_evidencia,
+                            evidencia.nome,
+                          ),
                         'Download iniciado.',
                       )
                       .catch(() => {});
@@ -1010,11 +1349,18 @@ function EvidencePanel({
 
                 {manager && (
                   <button
-                    disabled={closed || tools.busy || evidencia.status === 'Validado'}
+                    disabled={
+                      closed ||
+                      tools.busy ||
+                      evidencia.status === 'Validado'
+                    }
                     onClick={() => {
                       void tools
                         .run(() =>
-                          api(`/evidencias/${evidencia.id_evidencia}/validar`, 'POST'),
+                          api(
+                            `/evidencias/${evidencia.id_evidencia}/validar`,
+                            'POST',
+                          ),
                         )
                         .catch(() => {});
                     }}
@@ -1028,7 +1374,12 @@ function EvidencePanel({
         </section>
       ))}
 
-      {!p.marcos.length && <Empty>Cadastre o primeiro marco para anexar evidências.</Empty>}
+      {!p.marcos.length && (
+        <Empty>
+          Cadastre o primeiro marco para anexar
+          evidências.
+        </Empty>
+      )}
     </>
   );
 }
@@ -1040,15 +1391,17 @@ function FinancePanel({
   p: Project;
   tools: Tools;
 }) {
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] =
+    useState<number[]>([]);
 
   const closed = p.status_dossie === 'Fechado';
   const manager = canManage(tools.user);
 
   function expense(item?: Expense) {
     tools.open({
-      title: item ? 'Editar dispêndio' : 'Novo dispêndio',
-
+      title: item
+        ? 'Editar dispêndio'
+        : 'Novo dispêndio',
       fields: [
         {
           name: 'descricao',
@@ -1085,11 +1438,12 @@ function FinancePanel({
           nullable: true,
         },
       ],
-
       save: body =>
         tools.run(() =>
           api(
-            `/iniciativas/${p.id_iniciativa}/dispendios${item ? `/${item.id_dispendio}` : ''}`,
+            `/iniciativas/${p.id_iniciativa}/dispendios${
+              item ? `/${item.id_dispendio}` : ''
+            }`,
             item ? 'PUT' : 'POST',
             body,
           ),
@@ -1159,7 +1513,6 @@ function FinancePanel({
       title: item
         ? 'Editar horas — exige nova aprovação'
         : 'Registrar horas',
-
       fields: fields.map(field =>
         item
           ? {
@@ -1169,17 +1522,21 @@ function FinancePanel({
                   ? item.data.slice(0, 10)
                   : String(
                       (
-                        item as unknown as Record<string, unknown>
+                        item as unknown as Record<
+                          string,
+                          unknown
+                        >
                       )[field.name] ?? '',
                     ),
             }
           : field,
       ),
-
       save: body =>
         tools.run(() =>
           api(
-            `/iniciativas/${p.id_iniciativa}/timesheets${item ? `/${item.id_timesheet}` : ''}`,
+            `/iniciativas/${p.id_iniciativa}/timesheets${
+              item ? `/${item.id_timesheet}` : ''
+            }`,
             item ? 'PUT' : 'POST',
             body,
           ),
@@ -1192,14 +1549,32 @@ function FinancePanel({
   return (
     <>
       <div className="metrics">
-        <Card title="Dispêndios registrados" value={money(summary.expenses)} />
-        <Card title="Horas registradas" value={`${number(summary.hours)} h`} />
-        <Card title="Horas aprovadas" value={`${number(summary.approvedHours)} h`} />
-        <Card title="Custo pessoal aprovado" value={money(summary.personnel)} />
+        <Card
+          title="Dispêndios registrados"
+          value={money(summary.expenses)}
+        />
+
+        <Card
+          title="Horas registradas"
+          value={`${number(summary.hours)} h`}
+        />
+
+        <Card
+          title="Horas aprovadas"
+          value={`${number(summary.approvedHours)} h`}
+        />
+
+        <Card
+          title="Custo pessoal aprovado"
+          value={money(summary.personnel)}
+        />
       </div>
 
       {!p.ano_base && (
-        <p className="notice">Preencha o ano-base na edição do projeto antes de registrar despesas ou horas.</p>
+        <p className="notice">
+          Preencha o ano-base na edição do projeto
+          antes de registrar despesas ou horas.
+        </p>
       )}
 
       <section className="card">
@@ -1207,20 +1582,37 @@ function FinancePanel({
           <h2>Timesheets</h2>
 
           <div className="actions">
-            <button disabled={closed || tools.busy} onClick={() => time()}>Registrar horas</button>
+            <button
+              disabled={closed || tools.busy}
+              onClick={() => time()}
+            >
+              Registrar horas
+            </button>
 
             {manager && (
               <button
                 className="primary"
-                disabled={closed || tools.busy || !selected.length || selected.length > 100}
+                disabled={
+                  closed ||
+                  tools.busy ||
+                  !selected.length ||
+                  selected.length > 100
+                }
                 onClick={() => {
                   void tools
-                    .run(() => api('/timesheets/aprovar-lote', 'POST', { ids: selected }))
+                    .run(() =>
+                      api(
+                        '/timesheets/aprovar-lote',
+                        'POST',
+                        { ids: selected },
+                      ),
+                    )
                     .then(() => setSelected([]))
                     .catch(() => {});
                 }}
               >
-                Aprovar selecionados ({selected.length})
+                Aprovar selecionados (
+                {selected.length})
               </button>
             )}
           </div>
@@ -1246,31 +1638,62 @@ function FinancePanel({
                   <td>
                     <input
                       type="checkbox"
-                      aria-label={`Selecionar timesheet ${item.id_timesheet}`}
-                      disabled={closed || !manager || item.status !== 'Pendente'}
-                      checked={selected.includes(item.id_timesheet)}
+                      aria-label={
+                        `Selecionar timesheet ` +
+                        item.id_timesheet
+                      }
+                      disabled={
+                        closed ||
+                        !manager ||
+                        item.status !== 'Pendente'
+                      }
+                      checked={selected.includes(
+                        item.id_timesheet,
+                      )}
                       onChange={event =>
                         setSelected(current =>
                           event.target.checked
-                            ? [...current, item.id_timesheet]
-                            : current.filter(id => id !== item.id_timesheet),
+                            ? [
+                                ...current,
+                                item.id_timesheet,
+                              ]
+                            : current.filter(
+                                id =>
+                                  id !==
+                                  item.id_timesheet,
+                              ),
                         )
                       }
                     />
                   </td>
 
                   <td>
-                    <strong>{item.colaborador_nome}</strong>
-                    <small>{item.colaborador_id}{' · '}{item.cargo_regime}</small>
+                    <strong>
+                      {item.colaborador_nome}
+                    </strong>
+
+                    <small>
+                      {item.colaborador_id}
+                      {' · '}
+                      {item.cargo_regime}
+                    </small>
                   </td>
 
                   <td>{date(item.data)}</td>
                   <td>{number(item.horas_mes)}</td>
                   <td>{money(item.custo_apropriado)}</td>
-                  <td><Badge>{item.status}</Badge></td>
 
                   <td>
-                    <button disabled={closed || tools.busy} onClick={() => time(item)}>Editar</button>
+                    <Badge>{item.status}</Badge>
+                  </td>
+
+                  <td>
+                    <button
+                      disabled={closed || tools.busy}
+                      onClick={() => time(item)}
+                    >
+                      Editar
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -1278,13 +1701,21 @@ function FinancePanel({
           </table>
         </div>
 
-        {!p.timesheets.length && <Empty>Sem horas registradas.</Empty>}
+        {!p.timesheets.length && (
+          <Empty>Sem horas registradas.</Empty>
+        )}
       </section>
 
       <section className="card">
         <div className="section-title">
           <h2>Dispêndios</h2>
-          <button disabled={closed || tools.busy} onClick={() => expense()}>Novo dispêndio</button>
+
+          <button
+            disabled={closed || tools.busy}
+            onClick={() => expense()}
+          >
+            Novo dispêndio
+          </button>
         </div>
 
         <div className="table-wrap">
@@ -1307,16 +1738,27 @@ function FinancePanel({
                   <td>{date(item.data)}</td>
                   <td>{item.categoria}</td>
                   <td>{money(item.valor)}</td>
-                  <td>{item.documento_comprobatorio || 'Não informado'}</td>
+
+                  <td>
+                    {item.documento_comprobatorio ||
+                      'Não informado'}
+                  </td>
 
                   <td>
                     <div className="actions">
-                      <button disabled={closed || tools.busy} onClick={() => expense(item)}>Editar</button>
+                      <button
+                        disabled={closed || tools.busy}
+                        onClick={() => expense(item)}
+                      >
+                        Editar
+                      </button>
 
                       {manager && (
                         <button
                           className="danger"
-                          disabled={closed || tools.busy}
+                          disabled={
+                            closed || tools.busy
+                          }
                           onClick={() => {
                             const confirmado = confirm(
                               `Excluir o dispêndio "${item.descricao}"?`,
@@ -1347,12 +1789,15 @@ function FinancePanel({
           </table>
         </div>
 
-        {!p.dispendios.length && <Empty>Sem dispêndios registrados.</Empty>}
+        {!p.dispendios.length && (
+          <Empty>Sem dispêndios registrados.</Empty>
+        )}
       </section>
 
       <p className="muted">
-        Despesas e custos de pessoal são apresentados separadamente.
-        A edição de horas não recalcula automaticamente seu custo.
+        Despesas e custos de pessoal são apresentados
+        separadamente. A edição de horas não recalcula
+        automaticamente seu custo.
       </p>
     </>
   );
@@ -1369,19 +1814,42 @@ function AuditPanel({
   const [retry, setRetry] = useState(0);
 
   const result = useApi<Pagination<Audit>>(
-    `/auditoria?pagina=${page}&limite=20${action ? `&acao=${encodeURIComponent(action)}` : ''}${entity ? `&entidade=${encodeURIComponent(entity)}` : ''}`,
+    `/auditoria?pagina=${page}&limite=20${
+      action
+        ? `&acao=${encodeURIComponent(action)}`
+        : ''
+    }${
+      entity
+        ? `&entidade=${encodeURIComponent(entity)}`
+        : ''
+    }`,
     revision + retry,
   );
 
   if (result.loading) {
-    return <Empty>Carregando logs…</Empty>;
+    return (
+      <LoadingScreen
+        inline
+        title="Carregando histórico"
+        description="Buscando os registros de auditoria permitidos para sua conta."
+      />
+    );
   }
 
   if (result.error || !result.data) {
     return (
       <section className="card">
-        <p className="notice error" role="alert">{result.error}</p>
-        <button onClick={() => setRetry(value => value + 1)}>Tentar novamente</button>
+        <p className="notice error" role="alert">
+          {result.error}
+        </p>
+
+        <button
+          onClick={() =>
+            setRetry(value => value + 1)
+          }
+        >
+          Tentar novamente
+        </button>
       </section>
     );
   }
@@ -1393,6 +1861,7 @@ function AuditPanel({
       <div className="portfolio-filters">
         <label>
           Ação
+
           <select
             value={action}
             onChange={event => {
@@ -1400,7 +1869,9 @@ function AuditPanel({
               setPage(1);
             }}
           >
-            <option value="">Todas as ações</option>
+            <option value="">
+              Todas as ações
+            </option>
 
             {[
               'CRIAR',
@@ -1414,12 +1885,17 @@ function AuditPanel({
               'REABRIR_DOSSIE',
               'EXPORTAR_FORMPD_CSV',
               'EXPORTAR_FORMPD_HTML',
-            ].map(value => <option key={value}>{value}</option>)}
+            ].map(value => (
+              <option key={value}>
+                {value}
+              </option>
+            ))}
           </select>
         </label>
 
         <label>
           Entidade
+
           <select
             value={entity}
             onChange={event => {
@@ -1427,7 +1903,9 @@ function AuditPanel({
               setPage(1);
             }}
           >
-            <option value="">Todas as entidades</option>
+            <option value="">
+              Todas as entidades
+            </option>
 
             {[
               'Iniciativa',
@@ -1440,7 +1918,11 @@ function AuditPanel({
               'ParecerTecnico',
               'Alerta',
               'Usuario',
-            ].map(value => <option key={value}>{value}</option>)}
+            ].map(value => (
+              <option key={value}>
+                {value}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -1455,7 +1937,12 @@ function AuditPanel({
         </button>
       </div>
 
-      <div className="table-wrap" role="region" aria-label="Tabela de registros com rolagem horizontal" tabIndex={0}>
+      <div
+        className="table-wrap"
+        role="region"
+        aria-label="Tabela de registros com rolagem horizontal"
+        tabIndex={0}
+      >
         <table>
           <thead>
             <tr>
@@ -1470,7 +1957,11 @@ function AuditPanel({
           <tbody>
             {result.data.dados.map(item => (
               <tr key={item.id_auditoria}>
-                <td>{new Date(item.criado_em).toLocaleString('pt-BR')}</td>
+                <td>
+                  {new Date(
+                    item.criado_em,
+                  ).toLocaleString('pt-BR')}
+                </td>
                 <td>#{item.usuario_id}</td>
                 <td>{item.acao}</td>
                 <td>{item.entidade}</td>
@@ -1484,15 +1975,29 @@ function AuditPanel({
       {!result.data.dados.length && <Empty />}
 
       <div className="pager">
-        <span>{result.data.paginacao.total} eventos</span>
+        <span>
+          {result.data.paginacao.total} eventos
+        </span>
 
-        <button disabled={page <= 1} onClick={() => setPage(value => value - 1)}>Anterior</button>
+        <button
+          disabled={page <= 1}
+          onClick={() =>
+            setPage(value => value - 1)
+          }
+        >
+          Anterior
+        </button>
 
         <span>Página {page}</span>
 
         <button
-          disabled={page >= result.data.paginacao.total_paginas}
-          onClick={() => setPage(value => value + 1)}
+          disabled={
+            page >=
+            result.data.paginacao.total_paginas
+          }
+          onClick={() =>
+            setPage(value => value + 1)
+          }
         >
           Próxima
         </button>
@@ -1506,13 +2011,19 @@ function Workspace({
 }: {
   session: Session;
 }) {
-  const [screen, setScreen] = useState<Screen>('dashboard');
+  const [screen, setScreen] =
+    useState<Screen>('dashboard');
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [year, setYear] = useState('');
   const [revision, setRevision] = useState(0);
 
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [dialog, setDialog] = useState<Dialog | null>(null);
+  const [selectedId, setSelectedId] =
+    useState<number | null>(null);
+
+  const [dialog, setDialog] =
+    useState<Dialog | null>(null);
+
   const [busy, setBusy] = useState(false);
 
   const [notice, setNotice] = useState<{
@@ -1522,7 +2033,8 @@ function Workspace({
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [classification, setClassification] = useState('');
+  const [classification, setClassification] =
+    useState('');
   const [dossier, setDossier] = useState('');
 
   const data = useApi<Dashboard>(
@@ -1592,7 +2104,9 @@ function Workspace({
     ...new Set(
       all.map(project => project.classificacao_pd),
     ),
-  ].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  ].sort((a, b) =>
+    a.localeCompare(b, 'pt-BR'),
+  );
 
   const filtered = filterProjects(projects, {
     busca: search,
@@ -1631,24 +2145,25 @@ function Workspace({
       title: project
         ? 'Editar projeto'
         : 'Novo projeto de P&D',
-
       fields: projectFields(
         project,
         users.data || [user],
         user,
         year,
       ),
-
       save: body =>
         run(async () => {
           const saved = await api<Project>(
-            `/iniciativas${project ? `/${project.id_iniciativa}` : ''}`,
+            `/iniciativas${
+              project
+                ? `/${project.id_iniciativa}`
+                : ''
+            }`,
             project ? 'PUT' : 'POST',
             body,
           );
 
           setSelectedId(saved.id_iniciativa);
-
           return saved;
         }),
     });
@@ -1666,13 +2181,22 @@ function Workspace({
       <select
         value={active?.id_iniciativa || ''}
         onChange={event =>
-          setSelectedId(Number(event.target.value))
+          setSelectedId(
+            Number(event.target.value),
+          )
         }
       >
-        {!projects.length && <option value="">Nenhum projeto</option>}
+        {!projects.length && (
+          <option value="">
+            Nenhum projeto
+          </option>
+        )}
 
         {projects.map(project => (
-          <option value={project.id_iniciativa} key={project.id_iniciativa}>
+          <option
+            value={project.id_iniciativa}
+            key={project.id_iniciativa}
+          >
             {project.codigo} — {project.nome}
           </option>
         ))}
@@ -1705,14 +2229,18 @@ function Workspace({
                 key={project.id_iniciativa}
                 className="project-row"
                 tabIndex={0}
-                aria-label={`Abrir projeto ${project.codigo}: ${project.nome}`}
+                aria-label={
+                  `Abrir projeto ${project.codigo}: ` +
+                  project.nome
+                }
                 aria-current={
                   selectedId === project.id_iniciativa
                     ? 'true'
                     : undefined
                 }
                 onClick={event => {
-                  const target = event.target as HTMLElement;
+                  const target =
+                    event.target as HTMLElement;
 
                   if (
                     !target.closest(
@@ -1724,8 +2252,11 @@ function Workspace({
                 }}
                 onKeyDown={event => {
                   if (
-                    event.target === event.currentTarget &&
-                    ['Enter', ' '].includes(event.key)
+                    event.target ===
+                      event.currentTarget &&
+                    ['Enter', ' '].includes(
+                      event.key,
+                    )
                   ) {
                     event.preventDefault();
                     openProject(project);
@@ -1733,30 +2264,72 @@ function Workspace({
                 }}
               >
                 <td>
-                  <small>{project.codigo}</small>
-                  <strong>{project.nome}</strong>
-                  <small>{project.diretoria}{' / '}{project.gerencia}</small>
-                </td>
+                  <small>
+                    {project.codigo}
+                  </small>
 
-                <td>{project.classificacao_pd}</td>
-                <td>{project.trl_inicial}{' → '}{project.score_trl}</td>
+                  <strong>
+                    {project.nome}
+                  </strong>
+
+                  <small>
+                    {project.diretoria}
+                    {' / '}
+                    {project.gerencia}
+                  </small>
+                </td>
 
                 <td>
-                  {number(project.elegibilidade_pct)}%
-                  <progress value={Number(project.elegibilidade_pct)} max={100} />
+                  {project.classificacao_pd}
                 </td>
 
-                <td><Badge>{project.status_dossie}</Badge></td>
+                <td>
+                  {project.trl_inicial}
+                  {' → '}
+                  {project.score_trl}
+                </td>
+
+                <td>
+                  {number(
+                    project.elegibilidade_pct,
+                  )}
+                  %
+
+                  <progress
+                    value={Number(
+                      project.elegibilidade_pct,
+                    )}
+                    max={100}
+                  />
+                </td>
+
+                <td>
+                  <Badge>
+                    {project.status_dossie}
+                  </Badge>
+                </td>
 
                 <td>
                   <div className="actions">
-                    <button onClick={() => openProject(project)}>Dossiê</button>
+                    <button
+                      onClick={() =>
+                        openProject(project)
+                      }
+                    >
+                      Dossiê
+                    </button>
 
                     {screen === 'projetos' && (
                       <>
                         <button
-                          disabled={project.status_dossie === 'Fechado' || busy}
-                          onClick={() => editProject(project)}
+                          disabled={
+                            project.status_dossie ===
+                              'Fechado' ||
+                            busy
+                          }
+                          onClick={() =>
+                            editProject(project)
+                          }
                         >
                           Editar
                         </button>
@@ -1764,7 +2337,11 @@ function Workspace({
                         {manager && (
                           <button
                             className="danger"
-                            disabled={project.status_dossie === 'Fechado' || busy}
+                            disabled={
+                              project.status_dossie ===
+                                'Fechado' ||
+                              busy
+                            }
                             onClick={() => {
                               if (
                                 confirm(
@@ -1799,10 +2376,18 @@ function Workspace({
   return (
     <div className="app-shell">
       {menuOpen && (
-        <button className="sidebar-backdrop" aria-label="Fechar menu" onClick={() => setMenuOpen(false)} />
+        <button
+          className="sidebar-backdrop"
+          aria-label="Fechar menu"
+          onClick={() => setMenuOpen(false)}
+        />
       )}
 
-      <aside className={`sidebar ${menuOpen ? 'is-open' : ''}`}>
+      <aside
+        className={`sidebar ${
+          menuOpen ? 'is-open' : ''
+        }`}
+      >
         <a
           href="#"
           className="brand"
@@ -1811,29 +2396,46 @@ function Workspace({
             navigate('dashboard');
           }}
         >
-          <span className="brand-box">LB</span>
+          <span className="brand-box">
+            LB
+          </span>
+
           <span>
             <strong>BBTS | SGA-LB</strong>
             <small>Lei do Bem · P&amp;D</small>
           </span>
         </a>
 
-        <div className="sidebar-label">Módulos de apuração</div>
+        <div className="sidebar-label">
+          Módulos de apuração
+        </div>
 
         <nav>
           {screens
             .filter(
               item =>
                 item.id !== 'perfil' &&
-                (item.id !== 'auditoria' || manager),
+                (
+                  item.id !== 'auditoria' ||
+                  manager
+                ),
             )
             .map(item => (
               <button
-                className={screen === item.id ? 'active' : ''}
-                onClick={() => navigate(item.id)}
+                className={
+                  screen === item.id
+                    ? 'active'
+                    : ''
+                }
+                onClick={() =>
+                  navigate(item.id)
+                }
                 key={item.id}
               >
-                <span aria-hidden="true">{item.icon}</span>
+                <span aria-hidden="true">
+                  {item.icon}
+                </span>
+
                 {item.label}
               </button>
             ))}
@@ -1842,8 +2444,14 @@ function Workspace({
         <footer>
           <strong>{user.nome}</strong>
           <small>{user.perfil}</small>
-          <button onClick={logout}>Sair da conta ↗</button>
-          <small>ERP / ponto: integração não configurada</small>
+
+          <button onClick={logout}>
+            Sair da conta ↗
+          </button>
+
+          <small>
+            ERP / ponto: integração não configurada
+          </small>
         </footer>
       </aside>
 
@@ -1851,14 +2459,22 @@ function Workspace({
         <header className="topbar">
           <button
             className="menu-toggle"
-            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-label={
+              menuOpen
+                ? 'Fechar menu'
+                : 'Abrir menu'
+            }
             aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(value => !value)}
+            onClick={() =>
+              setMenuOpen(value => !value)
+            }
           >
             {menuOpen ? '✕' : '☰'}
           </button>
 
-          <span>Gestão de Pesquisa e Desenvolvimento</span>
+          <span>
+            Gestão de Pesquisa e Desenvolvimento
+          </span>
 
           <div className="actions">
             <label>
@@ -1875,12 +2491,16 @@ function Workspace({
                   setPage(1);
                 }}
               >
-                <option value="">Todos os anos</option>
+                <option value="">
+                  Todos os anos
+                </option>
 
                 {[
                   ...new Set(
                     all
-                      .map(project => project.ano_base)
+                      .map(
+                        project => project.ano_base,
+                      )
                       .filter(
                         (value): value is number =>
                           value !== null,
@@ -1889,13 +2509,20 @@ function Workspace({
                 ]
                   .sort((a, b) => b - a)
                   .map(value => (
-                    <option key={value} value={value}>{value}</option>
+                    <option
+                      key={value}
+                      value={value}
+                    >
+                      {value}
+                    </option>
                   ))}
               </select>
             </label>
 
             <button
-              onClick={() => setRevision(value => value + 1)}
+              onClick={() =>
+                setRevision(value => value + 1)
+              }
               disabled={busy || data.loading}
             >
               Atualizar
@@ -1905,18 +2532,28 @@ function Workspace({
               type="button"
               className="avatar"
               aria-label="Abrir meu perfil"
-              onClick={() => navigate('perfil')}
+              onClick={() =>
+                navigate('perfil')
+              }
             >
               {user.nome.slice(0, 1)}
             </button>
           </div>
         </header>
 
-        <main id="main-content" tabIndex={-1}>
+        <main
+          id="main-content"
+          tabIndex={-1}
+        >
           {DEMO_MODE && (
-            <p className="notice" role="status">
-              Modo de demonstração: dados fictícios, somente visualização.
-              Para usar o backend, defina VITE_DEMO_MODE=false e reinicie o frontend.
+            <p
+              className="notice"
+              role="status"
+            >
+              Modo de demonstração: dados fictícios,
+              somente visualização. Para usar o
+              backend, defina VITE_DEMO_MODE=false
+              e reinicie o frontend.
             </p>
           )}
 
@@ -1924,18 +2561,39 @@ function Workspace({
             <div>
               <span className="eyebrow">
                 SGA-LB ·{' '}
-                {year ? `Ano-base ${year}` : 'Carteira completa'}
+                {year
+                  ? `Ano-base ${year}`
+                  : 'Carteira completa'}
               </span>
 
-              <h1>{screens.find(item => item.id === screen)?.label}</h1>
-              <p>Dados registrados no sistema de acompanhamento de P&amp;D.</p>
+              <h1>
+                {
+                  screens.find(
+                    item => item.id === screen,
+                  )?.label
+                }
+              </h1>
+
+              <p>
+                Dados registrados no sistema de
+                acompanhamento de P&amp;D.
+              </p>
             </div>
 
-            {['dashboard', 'projetos'].includes(screen) && (
+            {[
+              'dashboard',
+              'projetos',
+            ].includes(screen) && (
               <button
                 className="primary"
-                disabled={busy || users.loading || !!users.error}
-                onClick={() => editProject(null)}
+                disabled={
+                  busy ||
+                  users.loading ||
+                  !!users.error
+                }
+                onClick={() =>
+                  editProject(null)
+                }
               >
                 + Novo projeto P&amp;D
               </button>
@@ -1944,68 +2602,132 @@ function Workspace({
 
           {notice && (
             <div
-              role={notice.error ? 'alert' : 'status'}
-              className={`notice ${notice.error ? 'error' : 'success'}`}
+              role={
+                notice.error
+                  ? 'alert'
+                  : 'status'
+              }
+              className={`notice ${
+                notice.error
+                  ? 'error'
+                  : 'success'
+              }`}
             >
               {notice.text}
-              <button onClick={() => setNotice(null)} aria-label="Fechar aviso">×</button>
+
+              <button
+                onClick={() =>
+                  setNotice(null)
+                }
+                aria-label="Fechar aviso"
+              >
+                ×
+              </button>
             </div>
           )}
 
           {data.loading || me.loading ? (
-            <Empty>Carregando dados da API…</Empty>
+            <LoadingScreen
+              inline
+              title="Carregando seus projetos"
+              description="Buscando os projetos e indicadores disponíveis para sua conta."
+            />
           ) : data.error || me.error ? (
-            <p className="notice error" role="alert">{data.error || me.error}</p>
+            <p
+              className="notice error"
+              role="alert"
+            >
+              {data.error || me.error}
+            </p>
           ) : (
             <>
               {users.error && (
                 <p className="notice error">
-                  Não foi possível carregar responsáveis: {users.error}
+                  Não foi possível carregar
+                  responsáveis: {users.error}
                 </p>
               )}
 
               {screen === 'dashboard' && (
                 <>
-                  <PortfolioProgress projects={projects} onOpen={openProject} />
+                  <PortfolioProgress
+                    projects={projects}
+                    onOpen={openProject}
+                  />
 
                   <div className="metrics">
-                    <Card title="Dispêndios" value={money(summary.expenses)} />
+                    <Card
+                      title="Dispêndios"
+                      value={money(
+                        summary.expenses,
+                      )}
+                    />
 
                     <Card
                       title="Horas P&D"
-                      value={`${number(summary.hours)} h`}
-                      note={`${number(summary.approvedHours)} h aprovadas`}
+                      value={
+                        `${number(summary.hours)} h`
+                      }
+                      note={
+                        `${number(
+                          summary.approvedHours,
+                        )} h aprovadas`
+                      }
                     />
 
                     <Card
                       title="Documentos"
                       value={summary.documents}
-                      note={`${summary.highRisk} projetos com risco alto informado`}
+                      note={
+                        `${summary.highRisk} projetos ` +
+                        'com risco alto informado'
+                      }
                     />
                   </div>
 
                   <div className="two-columns">
                     <section className="card">
-                      <h2>Dispêndios e horas por trilha</h2>
+                      <h2>
+                        Dispêndios e horas por trilha
+                      </h2>
 
                       {summary.tracks.map(track => (
-                        <article className="track" key={track.name}>
+                        <article
+                          className="track"
+                          key={track.name}
+                        >
                           <div>
-                            <strong>{track.name}</strong>
-                            <span>{money(track.cost)}</span>
+                            <strong>
+                              {track.name}
+                            </strong>
+
+                            <span>
+                              {money(track.cost)}
+                            </span>
                           </div>
 
-                          <progress max={Math.max(Number(summary.expenses), 1)} value={track.cost} />
+                          <progress
+                            max={Math.max(
+                              Number(
+                                summary.expenses,
+                              ),
+                              1,
+                            )}
+                            value={track.cost}
+                          />
 
                           <small>
                             {track.count} projetos
-                            {' · '}{number(track.hours)}
+                            {' · '}
+                            {number(track.hours)}
                             {' h registradas'}
                           </small>
                         </article>
                       ))}
 
-                      {!summary.tracks.length && <Empty />}
+                      {!summary.tracks.length && (
+                        <Empty />
+                      )}
                     </section>
 
                     <section className="card">
@@ -2014,16 +2736,30 @@ function Workspace({
                       {summary.alerts
                         .slice(0, 5)
                         .map((alert: Alert) => (
-                          <article className="record" key={alert.id_alerta}>
+                          <article
+                            className="record"
+                            key={alert.id_alerta}
+                          >
                             <div>
-                              <Badge>{alert.severidade}</Badge>
-                              <h4>{alert.titulo}</h4>
-                              <p>{alert.descricao}</p>
+                              <Badge>
+                                {alert.severidade}
+                              </Badge>
+
+                              <h4>
+                                {alert.titulo}
+                              </h4>
+
+                              <p>
+                                {alert.descricao}
+                              </p>
                             </div>
 
                             <button
                               onClick={() => {
-                                setSelectedId(alert.iniciativa_id);
+                                setSelectedId(
+                                  alert.iniciativa_id,
+                                );
+
                                 navigate('projetos');
                               }}
                             >
@@ -2033,13 +2769,18 @@ function Workspace({
                         ))}
 
                       {!summary.alerts.length && (
-                        <Empty>Sem alertas abertos neste recorte.</Empty>
+                        <Empty>
+                          Sem alertas abertos
+                          neste recorte.
+                        </Empty>
                       )}
                     </section>
                   </div>
 
                   <section className="card">
-                    <h2>Esteira de maturação tecnológica</h2>
+                    <h2>
+                      Esteira de maturação tecnológica
+                    </h2>
 
                     <div className="trl-grid">
                       {[
@@ -2047,16 +2788,24 @@ function Workspace({
                         [4, 6, 'Desenvolvimento'],
                         [7, 9, 'Validação e operação'],
                       ].map(([min, max, label]) => (
-                        <div className="trl-column" key={min}>
-                          <span className="eyebrow">TRL {min}–{max}</span>
+                        <div
+                          className="trl-column"
+                          key={min}
+                        >
+                          <span className="eyebrow">
+                            TRL {min}–{max}
+                          </span>
+
                           <h3>{label}</h3>
 
                           <strong>
                             {
                               projects.filter(
                                 project =>
-                                  project.score_trl >= Number(min) &&
-                                  project.score_trl <= Number(max),
+                                  project.score_trl >=
+                                    Number(min) &&
+                                  project.score_trl <=
+                                    Number(max),
                               ).length
                             }
                             {' projetos'}
@@ -2065,17 +2814,26 @@ function Workspace({
                           {projects
                             .filter(
                               project =>
-                                project.score_trl >= Number(min) &&
-                                project.score_trl <= Number(max),
+                                project.score_trl >=
+                                  Number(min) &&
+                                project.score_trl <=
+                                  Number(max),
                             )
                             .slice(0, 3)
                             .map(project => (
                               <button
-                                key={project.id_iniciativa}
-                                onClick={() => openProject(project)}
+                                key={
+                                  project.id_iniciativa
+                                }
+                                onClick={() =>
+                                  openProject(project)
+                                }
                               >
                                 {project.codigo}
-                                <small>{project.nome}</small>
+
+                                <small>
+                                  {project.nome}
+                                </small>
                               </button>
                             ))}
                         </div>
@@ -2084,13 +2842,18 @@ function Workspace({
                   </section>
 
                   <section className="card">
-                    <h2>Projetos da carteira</h2>
+                    <h2>
+                      Projetos da carteira
+                    </h2>
+
                     {projectTable}
                   </section>
 
                   <p className="muted">
-                    Economia fiscal e índice geral de glosa: não calculados.
-                    Os scores são informados pela equipe.
+                    Economia fiscal e índice geral
+                    de glosa: não calculados.
+                    Os scores são informados
+                    pela equipe.
                   </p>
                 </>
               )}
@@ -2098,14 +2861,31 @@ function Workspace({
               {screen === 'projetos' && (
                 <>
                   <div className="metrics">
-                    <Card title="Aderência ≥ 85%" value={summary.eligible} />
-                    <Card title="Aderência 60–84,99%" value={summary.partial} />
-                    <Card title="Alto risco informado" value={summary.highRisk} />
-                    <Card title="Documentos rastreados" value={summary.documents} />
+                    <Card
+                      title="Aderência ≥ 85%"
+                      value={summary.eligible}
+                    />
+
+                    <Card
+                      title="Aderência 60–84,99%"
+                      value={summary.partial}
+                    />
+
+                    <Card
+                      title="Alto risco informado"
+                      value={summary.highRisk}
+                    />
+
+                    <Card
+                      title="Documentos rastreados"
+                      value={summary.documents}
+                    />
                   </div>
 
                   <section className="card">
-                    <h2>Projetos da carteira</h2>
+                    <h2>
+                      Projetos da carteira
+                    </h2>
 
                     <div className="portfolio-filters">
                       <label className="search">
@@ -2116,7 +2896,9 @@ function Workspace({
                           value={search}
                           placeholder="Busque por código, nome ou classificação"
                           onChange={event => {
-                            setSearch(event.target.value);
+                            setSearch(
+                              event.target.value,
+                            );
                             setPage(1);
                           }}
                         />
@@ -2128,15 +2910,26 @@ function Workspace({
                         <select
                           value={classification}
                           onChange={event => {
-                            setClassification(event.target.value);
+                            setClassification(
+                              event.target.value,
+                            );
                             setPage(1);
                           }}
                         >
-                          <option value="">Todas as classificações</option>
+                          <option value="">
+                            Todas as classificações
+                          </option>
 
-                          {classifications.map(value => (
-                            <option key={value} value={value}>{value}</option>
-                          ))}
+                          {classifications.map(
+                            value => (
+                              <option
+                                key={value}
+                                value={value}
+                              >
+                                {value}
+                              </option>
+                            ),
+                          )}
                         </select>
                       </label>
 
@@ -2146,13 +2939,23 @@ function Workspace({
                         <select
                           value={dossier}
                           onChange={event => {
-                            setDossier(event.target.value);
+                            setDossier(
+                              event.target.value,
+                            );
                             setPage(1);
                           }}
                         >
-                          <option value="">Todos os dossiês</option>
-                          <option value="Aberto">Aberto</option>
-                          <option value="Fechado">Fechado</option>
+                          <option value="">
+                            Todos os dossiês
+                          </option>
+
+                          <option value="Aberto">
+                            Aberto
+                          </option>
+
+                          <option value="Fechado">
+                            Fechado
+                          </option>
                         </select>
                       </label>
 
@@ -2171,27 +2974,44 @@ function Workspace({
                     </div>
 
                     <p role="status">
-                      {filtered.length}{' '}
-                      {filtered.length === 1 ? 'projeto encontrado' : 'projetos encontrados'}
+                      {filtered.length}
+                      {' '}
+                      {filtered.length === 1
+                        ? 'projeto encontrado'
+                        : 'projetos encontrados'}
                     </p>
 
                     {projectTable}
 
                     <div className="pager">
-                      <span>{filtered.length} projetos</span>
+                      <span>
+                        {filtered.length} projetos
+                      </span>
 
                       <button
                         disabled={currentPage <= 1}
-                        onClick={() => setPage(value => value - 1)}
+                        onClick={() =>
+                          setPage(
+                            value => value - 1,
+                          )
+                        }
                       >
                         Anterior
                       </button>
 
-                      <span>{currentPage} / {pages}</span>
+                      <span>
+                        {currentPage} / {pages}
+                      </span>
 
                       <button
-                        disabled={currentPage >= pages}
-                        onClick={() => setPage(value => value + 1)}
+                        disabled={
+                          currentPage >= pages
+                        }
+                        onClick={() =>
+                          setPage(
+                            value => value + 1,
+                          )
+                        }
                       >
                         Próxima
                       </button>
@@ -2203,15 +3023,31 @@ function Workspace({
                   {active && (
                     <section className="card">
                       <details className="formpd-details">
-                        <summary>Complementar FORMP&D — {active.codigo}</summary>
+                        <summary>
+                          Complementar FORMP&D
+                          {' — '}
+                          {active.codigo}
+                        </summary>
 
                         <FormpdEditor
                           key={active.id_iniciativa}
-                          projectId={active.id_iniciativa}
-                          year={String(active.ano_base || '')}
-                          expenses={active.dispendios}
-                          people={active.timesheets}
-                          onSaved={() => setRevision(value => value + 1)}
+                          projectId={
+                            active.id_iniciativa
+                          }
+                          year={String(
+                            active.ano_base || '',
+                          )}
+                          expenses={
+                            active.dispendios
+                          }
+                          people={
+                            active.timesheets
+                          }
+                          onSaved={() =>
+                            setRevision(
+                              value => value + 1,
+                            )
+                          }
                         />
                       </details>
                     </section>
@@ -2232,9 +3068,15 @@ function Workspace({
                   {projectPicker}
 
                   {active ? (
-                    <EvidencePanel key={active.id_iniciativa} p={active} tools={tools} />
+                    <EvidencePanel
+                      key={active.id_iniciativa}
+                      p={active}
+                      tools={tools}
+                    />
                   ) : (
-                    <Empty>Cadastre um projeto primeiro.</Empty>
+                    <Empty>
+                      Cadastre um projeto primeiro.
+                    </Empty>
                   )}
                 </>
               )}
@@ -2244,9 +3086,15 @@ function Workspace({
                   {projectPicker}
 
                   {active ? (
-                    <FinancePanel key={active.id_iniciativa} p={active} tools={tools} />
+                    <FinancePanel
+                      key={active.id_iniciativa}
+                      p={active}
+                      tools={tools}
+                    />
                   ) : (
-                    <Empty>Cadastre um projeto primeiro.</Empty>
+                    <Empty>
+                      Cadastre um projeto primeiro.
+                    </Empty>
                   )}
                 </>
               )}
@@ -2276,29 +3124,43 @@ function Workspace({
               )}
 
               {screen === 'auditoria' &&
-                (manager ? (
-                  <AuditPanel revision={revision} />
-                ) : (
-                  <p className="notice error">
-                    Acesso restrito a gestores e administradores.
-                  </p>
-                ))}
+                (
+                  manager ? (
+                    <AuditPanel
+                      revision={revision}
+                    />
+                  ) : (
+                    <p className="notice error">
+                      Acesso restrito a gestores
+                      e administradores.
+                    </p>
+                  )
+                )}
 
               {screen === 'perfil' && (
                 <ProfilePanel
                   user={user}
-                  onUpdated={() => setRevision(value => value + 1)}
+                  onUpdated={() =>
+                    setRevision(
+                      value => value + 1,
+                    )
+                  }
                 />
               )}
 
-              {screen === 'consultas' && <PublicQueries />}
+              {screen === 'consultas' && (
+                <PublicQueries />
+              )}
             </>
           )}
         </main>
       </div>
 
       {dialog && (
-        <Modal dialog={dialog} close={() => setDialog(null)} />
+        <Modal
+          dialog={dialog}
+          close={() => setDialog(null)}
+        />
       )}
     </div>
   );
@@ -2312,17 +3174,22 @@ export default function App() {
       ).get('redefinir-senha') || '',
   );
 
-  const [session, setSession] = useState<Session | null>(
-    readSession,
-  );
+  const [session, setSession] =
+    useState<Session | null>(readSession);
 
   useEffect(() => {
     const clear = () => setSession(null);
 
-    window.addEventListener('sgalb:logout', clear);
+    window.addEventListener(
+      'sgalb:logout',
+      clear,
+    );
 
     return () => {
-      window.removeEventListener('sgalb:logout', clear);
+      window.removeEventListener(
+        'sgalb:logout',
+        clear,
+      );
     };
   }, []);
 
