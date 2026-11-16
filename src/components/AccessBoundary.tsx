@@ -1,15 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 
 import { api, download, logout } from '../lib/api'
 import { DEMO_MODE } from '../lib/demo'
 import { date, number } from '../lib/metrics'
 import { filterProjects } from '../lib/projectView'
+import { canNavigate } from '../lib/navigation'
 
 import type { Project, User } from '../types'
 
 import ProfilePanel from './ProfilePanel'
 import PortfolioProgress from './PortfolioProgress'
+import FormpdEditor from './FormpdEditor'
+
+import '../formpd.css'
 
 type Access = {
   papel:
@@ -141,6 +145,8 @@ function RestrictedWorkspace({
   const [year, setYear] = useState('')
   const [page, setPage] = useState(1)
 
+  const projectCardRef = useRef<HTMLElement>(null)
+
   const auditor = access.papel === 'auditor'
 
   useEffect(() => {
@@ -153,19 +159,19 @@ function RestrictedWorkspace({
       ),
     ])
       .then(([me, dashboard]) => {
-        if (active) {
-          setData({
-            usuario: me.usuario,
-            projetos: dashboard.projetos.map(project => ({
-              ...project,
-              marcos: project.marcos || [],
-              timesheets: project.timesheets || [],
-              dispendios: [],
-              alertas: [],
-              pareceres: [],
-            })),
-          })
-        }
+        if (!active) return
+
+        setData({
+          usuario: me.usuario,
+          projetos: dashboard.projetos.map(project => ({
+            ...project,
+            marcos: project.marcos || [],
+            timesheets: project.timesheets || [],
+            dispendios: [],
+            alertas: [],
+            pareceres: [],
+          })),
+        })
       })
       .catch(error => {
         if (active) setError(message(error))
@@ -215,12 +221,14 @@ function RestrictedWorkspace({
   ].filter(item => access.telas.includes(item.id))
 
   function navigate(id: string) {
-    if (access.telas.includes(id)) {
-      setScreen(id)
-      setMenuOpen(false)
-      setNotice('')
-      setError('')
+    if (!access.telas.includes(id) || !canNavigate()) {
+      return
     }
+
+    setScreen(id)
+    setMenuOpen(false)
+    setNotice('')
+    setError('')
   }
 
   function reload() {
@@ -230,8 +238,22 @@ function RestrictedWorkspace({
   }
 
   function open(project: Project) {
+    if (!canNavigate()) return
+
     setSelectedId(project.id_iniciativa)
-    navigate('projetos')
+    setScreen('projetos')
+    setMenuOpen(false)
+
+    requestAnimationFrame(() => {
+      projectCardRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+
+      projectCardRef.current?.focus({
+        preventScroll: true,
+      })
+    })
   }
 
   async function save(
@@ -319,7 +341,11 @@ function RestrictedWorkspace({
           <strong>{data?.usuario.nome}</strong>
           <small>{data?.usuario.perfil}</small>
 
-          <button onClick={logout}>
+          <button
+            onClick={() => {
+              if (canNavigate()) logout()
+            }}
+          >
             Sair da conta ↗
           </button>
         </footer>
@@ -351,6 +377,8 @@ function RestrictedWorkspace({
               <select
                 value={year}
                 onChange={event => {
+                  if (!canNavigate()) return
+
                   setYear(event.target.value)
                   setPage(1)
                 }}
@@ -380,7 +408,9 @@ function RestrictedWorkspace({
 
             <button
               disabled={loading || busy}
-              onClick={reload}
+              onClick={() => {
+                if (canNavigate()) reload()
+              }}
             >
               Atualizar
             </button>
@@ -466,8 +496,9 @@ function RestrictedWorkspace({
                       </h2>
 
                       <p>
-                        Consulte classificação, maturidade
-                        e incerteza tecnológica pela tela
+                        Consulte classificação,
+                        maturidade e incerteza
+                        tecnológica pela tela
                         Elegibilidade e projetos.
                       </p>
 
@@ -497,6 +528,8 @@ function RestrictedWorkspace({
                           value={search}
                           placeholder="Código, nome ou classificação"
                           onChange={event => {
+                            if (!canNavigate()) return
+
                             setSearch(event.target.value)
                             setPage(1)
                           }}
@@ -509,6 +542,8 @@ function RestrictedWorkspace({
                         <select
                           value={classification}
                           onChange={event => {
+                            if (!canNavigate()) return
+
                             setClassification(
                               event.target.value,
                             )
@@ -536,6 +571,8 @@ function RestrictedWorkspace({
                         <select
                           value={dossier}
                           onChange={event => {
+                            if (!canNavigate()) return
+
                             setDossier(event.target.value)
                             setPage(1)
                           }}
@@ -543,9 +580,11 @@ function RestrictedWorkspace({
                           <option value="">
                             Todos os dossiês
                           </option>
+
                           <option value="Aberto">
                             Aberto
                           </option>
+
                           <option value="Fechado">
                             Fechado
                           </option>
@@ -554,6 +593,8 @@ function RestrictedWorkspace({
 
                       <button
                         onClick={() => {
+                          if (!canNavigate()) return
+
                           setSearch('')
                           setClassification('')
                           setDossier('')
@@ -569,7 +610,12 @@ function RestrictedWorkspace({
                       {projects.length} projetos encontrados
                     </p>
 
-                    <div className="table-wrap">
+                    <div
+                      className="table-wrap"
+                      role="region"
+                      aria-label="Tabela de registros com rolagem horizontal"
+                      tabIndex={0}
+                    >
                       <table>
                         <thead>
                           <tr>
@@ -589,7 +635,9 @@ function RestrictedWorkspace({
                             )
                             .map(project => (
                               <tr
-                                key={project.id_iniciativa}
+                                key={
+                                  project.id_iniciativa
+                                }
                                 className="project-row"
                                 tabIndex={0}
                                 aria-label={`Abrir projeto ${project.codigo}`}
@@ -627,7 +675,9 @@ function RestrictedWorkspace({
                                 </td>
 
                                 <td>
-                                  {project.classificacao_pd}
+                                  {
+                                    project.classificacao_pd
+                                  }
                                 </td>
 
                                 <td>
@@ -687,12 +737,39 @@ function RestrictedWorkspace({
                   </section>
 
                   {active && (
-                    <section className="card">
+                    <section
+                      className="card"
+                      ref={projectCardRef}
+                      tabIndex={-1}
+                      aria-label={`Detalhes do projeto ${active.codigo}`}
+                    >
                       <h2>
                         {active.codigo} — {active.nome}
                       </h2>
 
                       <p>{active.descricao}</p>
+
+                      {!auditor && (
+                        <details className="formpd-details">
+                          <summary>
+                            Complementar dados técnicos
+                            do FORMP&D
+                          </summary>
+
+                          <FormpdEditor
+                            key={active.id_iniciativa}
+                            projectId={
+                              active.id_iniciativa
+                            }
+                            technicalOnly
+                            onSaved={() => {
+                              setRevision(
+                                value => value + 1,
+                              )
+                            }}
+                          />
+                        </details>
+                      )}
 
                       <p>
                         Incerteza tecnológica:{' '}
@@ -739,7 +816,9 @@ function RestrictedWorkspace({
                               !access.pode_editar_enquadramento
                             }
                           >
-                            <legend>Enquadramento</legend>
+                            <legend>
+                              Enquadramento
+                            </legend>
 
                             <div className="form-grid">
                               <label>
@@ -986,7 +1065,12 @@ function RestrictedWorkspace({
                       <section className="card">
                         <h2>Pessoas e dedicação</h2>
 
-                        <div className="table-wrap">
+                        <div
+                          className="table-wrap"
+                          role="region"
+                          aria-label="Tabela de registros com rolagem horizontal"
+                          tabIndex={0}
+                        >
                           <table>
                             <thead>
                               <tr>
@@ -1008,24 +1092,31 @@ function RestrictedWorkspace({
                                     }
                                   >
                                     <td>
-                                      {item.colaborador_nome}
+                                      {
+                                        item.colaborador_nome
+                                      }
                                     </td>
+
                                     <td>
                                       {item.cargo_regime}
                                     </td>
+
                                     <td>
                                       {date(item.data)}
                                     </td>
+
                                     <td>
-                                      {number(item.horas_mes)}
+                                      {number(
+                                        item.horas_mes,
+                                      )}
                                     </td>
+
                                     <td>
                                       {item.justificativa ||
                                         'Não informada'}
                                     </td>
-                                    <td>
-                                      {item.status}
-                                    </td>
+
+                                    <td>{item.status}</td>
                                   </tr>
                                 ),
                               )}
