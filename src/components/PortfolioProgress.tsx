@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import type { Project } from '../types'
 
 type Props = {
   projects: Project[]
   onOpen: (project: Project) => void
 }
+
+type Filter = 'all' | 'pending' | 'complete'
 
 function calculateProgress(project: Project) {
   const milestones = project.marcos || []
@@ -88,6 +91,8 @@ export default function PortfolioProgress({
   projects,
   onOpen,
 }: Props) {
+  const [filter, setFilter] = useState<Filter>('all')
+
   const entries = projects.map(project => ({
     project,
     ...calculateProgress(project),
@@ -102,83 +107,194 @@ export default function PortfolioProgress({
       )
     : 0
 
+  const completedCount = entries.filter(
+    entry => entry.percentage === 100,
+  ).length
+
+  const visible = entries.filter(entry => {
+    if (filter === 'complete') {
+      return entry.percentage === 100
+    }
+
+    if (filter === 'pending') {
+      return entry.percentage < 100
+    }
+
+    return true
+  })
+
+  const filters = [
+    ['all', 'Todos'],
+    ['pending', 'Com pendências'],
+    ['complete', 'Etapas concluídas'],
+  ] as const
+
   return (
-    <section className="card portfolio-progress">
+    <section className="card portfolio-progress portfolio-overview">
       <div className="section-title">
         <div>
+          <span className="eyebrow">
+            Visão da carteira
+          </span>
+
           <h2>Progresso dos projetos</h2>
 
           <p>
-            Acompanhe o preenchimento e os status registrados
-            em cada etapa.
+            Acompanhe as etapas e identifique o que
+            precisa de atenção.
           </p>
         </div>
 
-        {entries.length > 0 && (
-          <strong>{average}% no recorte</strong>
-        )}
+        <div className="portfolio-average">
+          <strong>{average}%</strong>
+          <span>Média no recorte</span>
+        </div>
       </div>
 
-      {!entries.length ? (
-        <p className="empty">
-          Nenhum projeto neste ano-base.
-        </p>
-      ) : (
-        entries.map(entry => (
+      <div
+        className="portfolio-summary"
+        aria-label="Resumo do acompanhamento"
+      >
+        <span>
+          <strong>{entries.length}</strong>
+          {' '}projetos
+        </span>
+
+        <span>
+          <strong>
+            {entries.length - completedCount}
+          </strong>
+          {' '}com etapas pendentes
+        </span>
+
+        <span>
+          <strong>{completedCount}</strong>
+          {' '}com todas as etapas registradas
+        </span>
+      </div>
+
+      <div
+        className="portfolio-switch"
+        role="group"
+        aria-label="Filtrar progresso dos projetos"
+      >
+        {filters.map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={filter === value}
+            onClick={() => setFilter(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <p className="portfolio-result" role="status">
+        {visible.length} de {entries.length} projetos
+        neste filtro
+      </p>
+
+      <div className="portfolio-project-grid">
+        {visible.map(entry => (
           <article
-            className="progress-project"
+            className="portfolio-project-card"
             key={entry.project.id_iniciativa}
           >
-            <div className="section-title">
-              <button
-                type="button"
-                className="project-title-button"
-                onClick={() => onOpen(entry.project)}
-              >
+            <div className="portfolio-project-top">
+              <span className="eyebrow">
                 {entry.project.codigo}
-                {' — '}
-                {entry.project.nome}
-              </button>
+              </span>
 
-              <strong>
+              <span
+                className={
+                  `portfolio-percentage ${
+                    entry.percentage === 100
+                      ? 'is-complete'
+                      : ''
+                  }`
+                }
+              >
                 {entry.percentage}%
-              </strong>
+              </span>
             </div>
+
+            <button
+              type="button"
+              className="project-title-button"
+              onClick={() => onOpen(entry.project)}
+            >
+              {entry.project.nome}
+            </button>
 
             <progress
               value={entry.percentage}
               max={100}
-              aria-label={`Progresso de ${entry.project.nome}`}
+              aria-label={
+                `Progresso de ${entry.project.nome}`
+              }
             />
 
             <small>
-              {entry.completed} de {entry.stages.length}{' '}
-              etapas concluídas
+              {entry.completed} de {entry.stages.length}
+              {' '}etapas concluídas
             </small>
 
-            <ul className="progress-stages">
-              {entry.stages.map(stage => (
-                <li key={stage.name}>
-                  <span aria-hidden="true">
-                    {stage.completed ? '✓' : '○'}
-                  </span>
-                  {' '}
-                  {stage.name}
-                  {': '}
-                  {stage.completed
-                    ? 'Concluído'
-                    : 'Pendente'}
-                </li>
-              ))}
-            </ul>
+            <details className="portfolio-stage-details">
+              <summary>
+                Ver etapas do projeto
+              </summary>
+
+              <ul className="portfolio-stage-list">
+                {entry.stages.map(stage => (
+                  <li
+                    key={stage.name}
+                    className={
+                      stage.completed ? 'is-complete' : ''
+                    }
+                  >
+                    <span aria-hidden="true">
+                      {stage.completed ? '✓' : '○'}
+                    </span>
+
+                    <span>{stage.name}</span>
+
+                    <small>
+                      {stage.completed
+                        ? 'Concluído'
+                        : 'Pendente'}
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            </details>
+
+            <button
+              type="button"
+              className="portfolio-open"
+              onClick={() => onOpen(entry.project)}
+            >
+              Abrir projeto
+
+              <span aria-hidden="true">↗</span>
+            </button>
           </article>
-        ))
+        ))}
+      </div>
+
+      {!visible.length && (
+        <p className="empty">
+          {entries.length
+            ? 'Nenhum projeto corresponde a este filtro.'
+            : 'Nenhum projeto neste ano-base.'}
+        </p>
       )}
 
-      <p className="muted">
+      <p className="muted portfolio-disclaimer">
         Cada etapa representa 20% do acompanhamento.
         Este indicador não representa elegibilidade,
-        aprovação fiscal ou autorização para fechar o dossiê.
+        aprovação fiscal ou autorização para fechar
+        o dossiê.
       </p>
     </section>
   )

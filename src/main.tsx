@@ -12,6 +12,7 @@ import './branding.css'
 import './accessibility.css'
 import './visual.css'
 import './refinement.css'
+import './workspace.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
