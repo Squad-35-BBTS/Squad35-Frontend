@@ -2519,18 +2519,7 @@ function Workspace({
             {menuOpen ? '✕' : '☰'}
           </button>
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px 20px',
-              minWidth: 0,
-            }}
-          >
-            <span>Gestão de Pesquisa e Desenvolvimento</span>
-            <TodayDate />
-          </div>
+          <TodayDate />
 
           <div className="actions">
             <label>
