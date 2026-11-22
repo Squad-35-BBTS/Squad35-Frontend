@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { api } from '../lib/api'
+import { cnpjValido } from '../lib/cnpj'
 
 type Company = {
   razao_social: string
@@ -31,6 +32,11 @@ export default function PublicQueries() {
 
     if (cnpj.length !== 14) {
       setError('Informe um CNPJ com 14 dígitos.')
+      return
+    }
+
+    if (!cnpjValido(cnpj)) {
+      setError('CNPJ inválido. Confira os dígitos informados.')
       return
     }
 

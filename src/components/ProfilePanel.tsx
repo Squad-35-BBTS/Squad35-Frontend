@@ -77,7 +77,7 @@ export default function ProfilePanel({ user, onUpdated }: Props) {
         <div className="actions"><button className="primary">Alterar senha e entrar novamente</button></div>
       </fieldset>
     </form>
-    <p className="muted">O perfil de acesso é administrado pelo responsável pelo ambiente. Foto e recuperação por e-mail ainda não estão disponíveis.</p>
+    <p className="muted">O perfil de acesso é administrado pelo responsável pelo ambiente. Para recuperar sua senha por e-mail, use “Esqueci minha senha ou meu login” na tela de acesso.</p>
     <button type="button" disabled={busy} onClick={logout}>Encerrar sessão</button>
   </section>
 }

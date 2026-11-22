@@ -1880,6 +1880,8 @@ function AuditPanel({
               'ATUALIZAR_PREPARACAO',
               'APROVAR',
               'VALIDAR',
+              'ANEXAR',
+              'RESOLVER',
               'EMITIR_PARECER',
               'FECHAR_DOSSIE',
               'REABRIR_DOSSIE',
@@ -2204,6 +2206,9 @@ function Workspace({
     </label>
   );
 
+  const tableProjects = screen === 'dashboard' ? projects : filtered;
+  const tablePage = screen === 'dashboard' ? 1 : currentPage;
+
   const projectTable = (
     <div className="table-wrap">
       <table>
@@ -2219,10 +2224,10 @@ function Workspace({
         </thead>
 
         <tbody>
-          {filtered
+          {tableProjects
             .slice(
-              (currentPage - 1) * 5,
-              currentPage * 5,
+              (tablePage - 1) * 5,
+              screen === 'dashboard' ? tableProjects.length : tablePage * 5,
             )
             .map(project => (
               <tr
@@ -2369,7 +2374,7 @@ function Workspace({
         </tbody>
       </table>
 
-      {!filtered.length && <Empty />}
+      {!tableProjects.length && <Empty />}
     </div>
   );
 

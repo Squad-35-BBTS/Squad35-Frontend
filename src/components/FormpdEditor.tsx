@@ -478,7 +478,7 @@ export default function FormpdEditor({
 
       setResult({
         key,
-        item,
+        item: { ...result.item, ...item, ano_base: item.ano_base ?? result.item.ano_base },
         error: '',
       })
 
