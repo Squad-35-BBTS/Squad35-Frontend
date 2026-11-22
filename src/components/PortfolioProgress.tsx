@@ -10,7 +10,7 @@ type Props = {
 
 type Filter = 'all' | 'pending' | 'complete'
 
-function calculateProgress(project: Project) {
+export function calculateProgress(project: Project) {
   const milestones = project.marcos || []
   const timesheets = project.timesheets || []
 

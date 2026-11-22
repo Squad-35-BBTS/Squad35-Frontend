@@ -5,7 +5,7 @@ import { DEMO_MODE } from './lib/demo';
 import { filterProjects } from './lib/projectView';
 import { canNavigate } from './lib/navigation';
 
-import PortfolioProgress from './components/PortfolioProgress';
+import PortfolioProgress, { calculateProgress } from './components/PortfolioProgress';
 import AccessBoundary from './components/AccessBoundary';
 import FormpdPanel from './components/FormpdPanel';
 import FormpdEditor from './components/FormpdEditor';
@@ -2247,7 +2247,8 @@ function Workspace({
             <th>Projeto</th>
             <th>Classificação</th>
             <th>TRL</th>
-            <th>Elegibilidade informada</th>
+            <th>Progresso das etapas</th>
+            <th>Situação do projeto</th>
             <th>Dossiê</th>
             <th>Ações</th>
           </tr>
@@ -2325,17 +2326,27 @@ function Workspace({
                 </td>
 
                 <td>
-                  {number(
-                    project.elegibilidade_pct,
-                  )}
-                  %
+                  {calculateProgress(project).percentage}%
 
                   <progress
-                    value={Number(
-                      project.elegibilidade_pct,
-                    )}
+                    value={calculateProgress(project).percentage}
                     max={100}
+                    aria-label={`Progresso das etapas de ${project.nome}`}
                   />
+                  <small>
+                    {calculateProgress(project).completed} de 5 etapas concluídas
+                  </small>
+                </td>
+
+                <td>
+                  <Badge>
+                    {project.status === 'Concluído'
+                      ? 'Finalizado'
+                      : project.status || 'Em andamento'}
+                  </Badge>
+                  {project.status === 'Concluído' && (
+                    <small>5 de 5 etapas concluídas</small>
+                  )}
                 </td>
 
                 <td>
@@ -3016,6 +3027,11 @@ function Workspace({
                       {filtered.length === 1
                         ? 'projeto encontrado'
                         : 'projetos encontrados'}
+                    </p>
+
+                    <p className="muted">
+                      Projetos finalizados permanecem nesta carteira para consulta ao histórico.
+                      O progresso reflete as cinco etapas do acompanhamento. A elegibilidade informada permanece disponível no dossiê do projeto.
                     </p>
 
                     {projectTable}
