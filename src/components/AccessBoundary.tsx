@@ -283,6 +283,11 @@ function RestrictedWorkspace({
       new FormData(event.currentTarget).entries(),
     )
 
+    if (Number(body.trl_inicial) > Number(body.score_trl)) {
+      setError('O TRL atual deve ser maior ou igual ao TRL inicial.')
+      return
+    }
+
     setBusy(true)
     setError('')
     setNotice('')
@@ -295,7 +300,8 @@ function RestrictedWorkspace({
       )
 
       setNotice('Enquadramento atualizado.')
-      reload()
+      // Atualize a carteira sem desmontar o complemento técnico e seu rascunho.
+      setRevision(value => value + 1)
     } catch (error) {
       setError(message(error))
     } finally {
@@ -643,7 +649,10 @@ function RestrictedWorkspace({
                     </div>
 
                     <p role="status">
-                      {projects.length} projetos encontrados
+                      {projects.length}{' '}
+                      {projects.length === 1
+                        ? 'projeto encontrado'
+                        : 'projetos encontrados'}
                     </p>
 
                     <div

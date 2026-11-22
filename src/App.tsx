@@ -274,6 +274,15 @@ function Modal({
       }
     }
 
+    if (
+      body.trl_inicial !== undefined &&
+      body.score_trl !== undefined &&
+      Number(body.trl_inicial) > Number(body.score_trl)
+    ) {
+      setError('O TRL atual deve ser maior ou igual ao TRL inicial.');
+      return;
+    }
+
     setBusy(true);
     setError('');
 
@@ -2990,7 +2999,8 @@ function Workspace({
 
                     <div className="pager">
                       <span>
-                        {filtered.length} projetos
+                        {filtered.length}{' '}
+                        {filtered.length === 1 ? 'projeto' : 'projetos'}
                       </span>
 
                       <button

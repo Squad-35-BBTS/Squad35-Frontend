@@ -133,7 +133,7 @@ export function RecoveryRequest() {
         className="recovery-link"
         onClick={() => setOpen(true)}
       >
-        Esqueci minha senha ou meu login
+        Esqueci Meu Login ou Senha
       </button>
 
       {open && createPortal(
