@@ -2141,6 +2141,8 @@ function Workspace({
     projects[0] ||
     null;
 
+  const ongoingProjects = projects.filter(project => project.status !== 'Concluído');
+
   const summary = totals(projects);
 
   function finalizeProject(project: Project) {
@@ -2829,6 +2831,14 @@ function Workspace({
                       Esteira de maturação tecnológica
                     </h2>
 
+                    <p className="muted">
+                      Apenas projetos em andamento. Os finalizados permanecem no histórico da carteira.
+                    </p>
+
+                    {!ongoingProjects.length && (
+                      <Empty>Nenhum projeto em andamento neste recorte.</Empty>
+                    )}
+
                     <div className="trl-grid">
                       {[
                         [1, 3, 'Conceituação'],
@@ -2847,7 +2857,7 @@ function Workspace({
 
                           <strong>
                             {
-                              projects.filter(
+                              ongoingProjects.filter(
                                 project =>
                                   project.score_trl >=
                                     Number(min) &&
@@ -2858,7 +2868,7 @@ function Workspace({
                             {' projetos'}
                           </strong>
 
-                          {projects
+                          {ongoingProjects
                             .filter(
                               project =>
                                 project.score_trl >=
