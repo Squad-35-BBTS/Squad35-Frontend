@@ -1,0 +1,33 @@
+.topbar .today-date {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 3px;
+  padding: 0 16px 0 4px;
+  border-right: 1px solid var(--line);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.today-date-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.today-date time {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .topbar .today-date {
+    padding-right: 8px;
+  }
+
+  .today-date time {
+    font-size: 11px;
+  }
+}

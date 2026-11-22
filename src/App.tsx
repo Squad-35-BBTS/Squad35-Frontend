@@ -10,6 +10,7 @@ import AccessBoundary from './components/AccessBoundary';
 import FormpdPanel from './components/FormpdPanel';
 import FormpdEditor from './components/FormpdEditor';
 import LoadingScreen from './components/LoadingScreen';
+import TodayDate from './components/TodayDate';
 
 import {
   api,
@@ -2573,6 +2574,8 @@ function Workspace({
             >
               Atualizar
             </button>
+
+            <TodayDate />
 
             <button
               type="button"
