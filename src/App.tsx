@@ -2519,9 +2519,18 @@ function Workspace({
             {menuOpen ? '✕' : '☰'}
           </button>
 
-          <span>
-            Gestão de Pesquisa e Desenvolvimento
-          </span>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px 20px',
+              minWidth: 0,
+            }}
+          >
+            <span>Gestão de Pesquisa e Desenvolvimento</span>
+            <TodayDate />
+          </div>
 
           <div className="actions">
             <label>
@@ -2574,8 +2583,6 @@ function Workspace({
             >
               Atualizar
             </button>
-
-            <TodayDate />
 
             <button
               type="button"
