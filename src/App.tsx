@@ -599,7 +599,6 @@ function projectFields(
       options: options([
         'Em Avaliação',
         'Em Apuração',
-        'Concluído',
       ]),
     },
     {
@@ -1894,6 +1893,7 @@ function AuditPanel({
               'EMITIR_PARECER',
               'FECHAR_DOSSIE',
               'REABRIR_DOSSIE',
+              'FINALIZAR_PROJETO',
               'EXPORTAR_FORMPD_CSV',
               'EXPORTAR_FORMPD_HTML',
             ].map(value => (
@@ -2141,6 +2141,27 @@ function Workspace({
     null;
 
   const summary = totals(projects);
+
+  function finalizeProject(project: Project) {
+    if (
+      !manager ||
+      !canNavigate() ||
+      !window.confirm(
+        `Finalizar o projeto ${project.codigo}? ` +
+        'Ele sairá do acompanhamento e continuará disponível na carteira. ' +
+        'Para retomá-lo, reabra o dossiê com justificativa.',
+      )
+    ) return;
+
+    void run(
+      () => api(
+        `/iniciativas/${project.id_iniciativa}/finalizar`,
+        'POST',
+        {},
+      ),
+      'Projeto finalizado. O histórico permanece disponível em Elegibilidade e projetos.',
+    ).catch(() => {});
+  }
 
   function navigate(id: Screen) {
     if (!canNavigate()) return;
@@ -2667,6 +2688,8 @@ function Workspace({
                   <PortfolioProgress
                     projects={projects}
                     onOpen={openProject}
+                    onFinalize={manager ? finalizeProject : undefined}
+                    busy={busy}
                   />
 
                   <div className="metrics">

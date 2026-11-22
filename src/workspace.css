@@ -506,6 +506,12 @@
   line-height: 1.6;
 }
 
+.portfolio-finalize {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 10px;
+}
+
 /* Foco e interações */
 
 .main-shell main input:not([type='checkbox']),

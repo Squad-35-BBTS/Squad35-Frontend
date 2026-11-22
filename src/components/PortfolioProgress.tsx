@@ -4,6 +4,8 @@ import type { Project } from '../types'
 type Props = {
   projects: Project[]
   onOpen: (project: Project) => void
+  onFinalize?: (project: Project) => void
+  busy?: boolean
 }
 
 type Filter = 'all' | 'pending' | 'complete'
@@ -90,10 +92,16 @@ function calculateProgress(project: Project) {
 export default function PortfolioProgress({
   projects,
   onOpen,
+  onFinalize,
+  busy = false,
 }: Props) {
   const [filter, setFilter] = useState<Filter>('all')
 
-  const entries = projects.map(project => ({
+  const activeProjects = projects.filter(
+    project => project.status !== 'Concluído',
+  )
+
+  const entries = activeProjects.map(project => ({
     project,
     ...calculateProgress(project),
   }))
@@ -278,6 +286,17 @@ export default function PortfolioProgress({
 
               <span aria-hidden="true">↗</span>
             </button>
+
+            {entry.completed === entry.stages.length && onFinalize && (
+              <button
+                type="button"
+                className="primary portfolio-finalize"
+                disabled={busy}
+                onClick={() => onFinalize(entry.project)}
+              >
+                Finalizar projeto
+              </button>
+            )}
           </article>
         ))}
       </div>
@@ -286,7 +305,9 @@ export default function PortfolioProgress({
         <p className="empty">
           {entries.length
             ? 'Nenhum projeto corresponde a este filtro.'
-            : 'Nenhum projeto neste ano-base.'}
+            : projects.length
+              ? 'Todos os projetos deste recorte já foram finalizados. Consulte o histórico em Elegibilidade e projetos.'
+              : 'Nenhum projeto neste ano-base.'}
         </p>
       )}
 
