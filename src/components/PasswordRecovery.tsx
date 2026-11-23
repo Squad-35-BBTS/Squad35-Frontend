@@ -362,6 +362,50 @@ export function RecoveryRequest() {
   )
 }
 
+function NewPasswordField({ name, label, disabled }: {
+  name: string
+  label: string
+  disabled: boolean
+}) {
+  const [visible, setVisible] = useState(false)
+  const id = `reset-${name}`
+
+  return (
+    <label htmlFor={id}>
+      {label}
+      <div className="password">
+        <input
+          id={id}
+          name={name}
+          type={visible ? 'text' : 'password'}
+          required
+          minLength={10}
+          autoComplete="new-password"
+          disabled={disabled}
+        />
+        <button
+          type="button"
+          disabled={disabled}
+          aria-label={`${visible ? 'Ocultar' : 'Mostrar'} ${label.toLocaleLowerCase('pt-BR')}`}
+          aria-controls={id}
+          aria-pressed={visible}
+          onClick={() => setVisible(value => !value)}
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M2 12c2.5-4.5 5.8-7 10-7s7.5 2.5 10 7c-2.5 4.5-5.8 7-10 7S4.5 16.5 2 12Z"
+              stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"
+            />
+            <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
+            {visible && <path d="m3 3 18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />}
+          </svg>
+          <span>{visible ? 'Ocultar' : 'Mostrar'}</span>
+        </button>
+      </div>
+    </label>
+  )
+}
+
 export function ResetPassword({
   token,
   onComplete,
@@ -372,7 +416,6 @@ export function ResetPassword({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
-  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     window.history.replaceState(
@@ -467,44 +510,8 @@ export function ResetPassword({
               onSubmit={submit}
               aria-busy={busy}
             >
-              <label>
-                Nova senha
-
-                <input
-                  name="nova_senha"
-                  type={visible ? 'text' : 'password'}
-                  required
-                  minLength={10}
-                  autoComplete="new-password"
-                  disabled={busy}
-                />
-              </label>
-
-              <label>
-                Confirmar nova senha
-
-                <input
-                  name="confirmacao"
-                  type={visible ? 'text' : 'password'}
-                  required
-                  minLength={10}
-                  autoComplete="new-password"
-                  disabled={busy}
-                />
-              </label>
-
-              <button
-                type="button"
-                className="recovery-visibility"
-                aria-pressed={visible}
-                onClick={() =>
-                  setVisible(value => !value)
-                }
-              >
-                {visible
-                  ? 'Ocultar senhas'
-                  : 'Mostrar senhas'}
-              </button>
+              <NewPasswordField name="nova_senha" label="Nova senha" disabled={busy} />
+              <NewPasswordField name="confirmacao" label="Confirmar nova senha" disabled={busy} />
 
               {error && (
                 <p
